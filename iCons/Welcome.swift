@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Firebase
 
 struct Welcome: View {
     var body: some View {

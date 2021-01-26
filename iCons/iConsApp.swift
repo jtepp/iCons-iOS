@@ -6,12 +6,16 @@
 //
 
 import SwiftUI
+import Firebase
 
 @main
 struct iConsApp: App {
     var body: some Scene {
         WindowGroup {
             Welcome()
+                .onAppear(){
+                    FirebaseApp.configure()
+                }
         }
     }
 }
