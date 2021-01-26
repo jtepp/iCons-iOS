@@ -11,7 +11,7 @@ import SwiftUI
 struct iConsApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            Welcome()
         }
     }
 }
