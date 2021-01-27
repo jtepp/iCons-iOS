@@ -101,7 +101,7 @@ struct Home: View {
                                     UserDefaults.standard.setValue(authResult.user.email, forKey: "email")
                                     print(UserDefaults.standard.string(forKey: "displayName")!)
                                     print(UserDefaults.standard.string(forKey: "email")!)
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
                                         pillOffset = 0
                                         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5)) {
                                             pillOffset = PILLGONE
