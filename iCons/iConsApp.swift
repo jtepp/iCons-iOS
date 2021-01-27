@@ -10,12 +10,14 @@ import Firebase
 
 @main
 struct iConsApp: App {
+    
+    init() {
+        FirebaseApp.configure()
+    }
+    
     var body: some Scene {
         WindowGroup {
             Welcome()
-                .onAppear(){
-                    FirebaseApp.configure()
-                }
         }
     }
 }
