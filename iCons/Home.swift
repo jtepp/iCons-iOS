@@ -103,6 +103,10 @@ struct Home: View {
                                     print(UserDefaults.standard.string(forKey: "email")!)
                                     DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
                                         pillOffset = 0
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5)) {
+                                            pillOffset = PILLGONE
+                                            dragOffset = 0
+                                        }
                                         
                                     }
                                 }
