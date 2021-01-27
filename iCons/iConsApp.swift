@@ -17,7 +17,7 @@ struct iConsApp: App {
     
     var body: some Scene {
         WindowGroup {
-            Welcome()
+            Home()
         }
     }
 }
