@@ -30,22 +30,38 @@ struct itemInfo: View {
                         Text("REQUEST")
                             .font(Font.system(size: 36, weight: .bold, design: .default))
                             .bold()
+                            .offset(y:-20)
                     }
                     .edgesIgnoringSafeArea(.all)
                     .foregroundColor(.white)
-                    .frame(width: UIScreen.main.bounds.width, height: 150, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                    .frame(width: UIScreen.main.bounds.width, height: 200, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
                     .background(
                         RoundedRectangle(cornerRadius: 50)
                             .fill(Color("green"))
                     )
-                    .offset(y:40)
+                    .offset(y:50)
+                    
 
                     
                 }
             }
         }
-        
         .navigationTitle(item.name)
+        .sheet(isPresented: $confirming){
+            ZStack {
+                background(Color("green")).colorScheme(.dark)
+                Button(action: {}){
+                    Text("Confirm")
+                        .foregroundColor(.white)
+                        .padding()
+                        .background(
+                            Capsule()
+                                .fill(Color("green"))
+                                .colorScheme(.light)
+                        )
+                }
+            }
+        }
     }
 }
 

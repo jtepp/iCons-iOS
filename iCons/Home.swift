@@ -130,7 +130,15 @@ struct Home: View {
                 .onAppear(){
                     if (UserDefaults.standard.string(forKey: "displayName") != nil && UserDefaults.standard.string(forKey: "email") != nil) {
                         signedOut = false
-                        already = false
+                        already = true
+                        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
+                            pillOffset = 0
+                            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(4)) {
+                                pillOffset = PILLGONE
+                                dragOffset = 0
+                            }
+                            
+                        }
                     }
                 }
             })
