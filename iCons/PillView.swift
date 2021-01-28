@@ -16,6 +16,7 @@ struct PillView: View {
         VStack{
             Spacer()
             Text("Welcome,\n"+UserDefaults.standard.string(forKey: "displayName")!)
+                .multilineTextAlignment(.center)
                 .foregroundColor(.primary)
                 .font(.footnote)
                 .frame(maxHeight:40)
