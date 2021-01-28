@@ -19,6 +19,7 @@ struct Home: View {
     
     let PILLGONE:CGFloat = 200
     @State var signedOut = UserDefaults.standard.string(forKey: "displayName") == "" || UserDefaults.standard.string(forKey: "email") == ""
+    @State var already = false
     @State var name = UserDefaults.standard.string(forKey: "displayName")
     @State var pillOffset:CGFloat = 200
     @State var dragOffset:CGFloat = 0
@@ -42,6 +43,7 @@ struct Home: View {
                             UserDefaults.standard.setValue("", forKey: "displayName")
                             UserDefaults.standard.setValue("", forKey: "email")
                             signedOut = true
+                            already = false
                         } catch {
                             print("sign out error")
                         }
@@ -64,9 +66,10 @@ struct Home: View {
                 }
                 .onAppear{
                     name = UserDefaults.standard.string(forKey: "displayName")
-                    if name != "" && !signedOut {
+                    if name != "" && !signedOut && !already {
+                        already = true
                         pillOffset = 0
-                        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5)) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(4)) {
                             pillOffset = PILLGONE
                             dragOffset = 0
                         }
@@ -103,7 +106,7 @@ struct Home: View {
                                     print(UserDefaults.standard.string(forKey: "email")!)
                                     DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
                                         pillOffset = 0
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5)) {
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(4)) {
                                             pillOffset = PILLGONE
                                             dragOffset = 0
                                         }
