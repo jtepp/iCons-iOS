@@ -15,7 +15,7 @@ struct PillView: View {
     var body: some View {
         VStack{
             Spacer()
-            Text("Welcome,\n"+UserDefaults.standard.string(forKey: "displayName")!)
+            Text("Welcome,\n"+(UserDefaults.standard.string(forKey: "displayName") ?? "")!)
                 .multilineTextAlignment(.center)
                 .foregroundColor(.primary)
                 .font(.footnote)

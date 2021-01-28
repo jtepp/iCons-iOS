@@ -18,7 +18,7 @@ struct Home: View {
     }
     
     let PILLGONE:CGFloat = 200
-    @State var signedOut = UserDefaults.standard.string(forKey: "displayName") == "" || UserDefaults.standard.string(forKey: "email") == ""
+    @State var signedOut = true
     @State var already = false
     @State var name = UserDefaults.standard.string(forKey: "displayName")
     @State var pillOffset:CGFloat = 200
@@ -40,8 +40,8 @@ struct Home: View {
                     Button(action: {
                         do {
                             try Auth.auth().signOut()
-                            UserDefaults.standard.setValue("", forKey: "displayName")
-                            UserDefaults.standard.setValue("", forKey: "email")
+                            UserDefaults.standard.setValue(nil, forKey: "displayName")
+                            UserDefaults.standard.setValue(nil, forKey: "email")
                             signedOut = true
                             already = false
                         } catch {
@@ -104,6 +104,7 @@ struct Home: View {
                                     UserDefaults.standard.setValue(authResult.user.email, forKey: "email")
                                     print(UserDefaults.standard.string(forKey: "displayName")!)
                                     print(UserDefaults.standard.string(forKey: "email")!)
+                                    already = true
                                     DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
                                         pillOffset = 0
                                         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(4)) {
@@ -125,6 +126,12 @@ struct Home: View {
                             )
                     }
                     
+                }
+                .onAppear(){
+                    if (UserDefaults.standard.string(forKey: "displayName") != nil && UserDefaults.standard.string(forKey: "email") != nil) {
+                        signedOut = false
+                        already = false
+                    }
                 }
             })
             

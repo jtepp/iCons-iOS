@@ -12,12 +12,16 @@ struct itemList: View {
     @ObservedObject private var viewModel = ItemsViewModel()
     var body: some View {
             List(viewModel.items){ item in
-                NavigationLink(destination: itemInfo(item: Binding<Item>.constant(item))){
-                    HStack {
+                NavigationLink(destination: itemInfo(item: item)){
+                    VStack(alignment:.leading) {
                         Text(item.name)
-                        Spacer()
-                        Text(String(item.available)+" remaining")
+                            .font(.headline)
+                            .padding(.vertical, 2)
+                        Text(String(Int(item.available))+" remaining")
+                            .font(.footnote)
+                            .foregroundColor(.secondary)
                     }
+                    
                 }
             }
                 .navigationTitle(category)
