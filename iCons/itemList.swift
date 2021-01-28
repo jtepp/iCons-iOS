@@ -11,8 +11,12 @@ struct itemList: View {
     var category: String
     @ObservedObject private var viewModel = ItemsViewModel()
     var body: some View {
-            List(viewModel.items){ item in
-                NavigationLink(destination: itemInfo(item: item)){
+        List(viewModel.items.filter({ i -> Bool in
+            i.category.lowercased() == category.lowercased() || category.lowercased() == "all"
+        })
+        
+        ){ item in
+            NavigationLink(destination: itemInfo(item: item)){
                     VStack(alignment:.leading) {
                         Text(item.name)
                             .font(.headline)
