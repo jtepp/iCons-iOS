@@ -80,16 +80,19 @@ struct itemInfo_Preview: PreviewProvider {
     }
 }
 
-let d = DateFormatter()
+
 
 func sendEmail(item:Item, c:Binding<Bool>) {
-    
     let room = "220"
+    let formatter = DateFormatter()
+    formatter.dateStyle = .long
+    formatter.timeStyle = .short
+    let date = formatter.string(from: Date())
     let dn = UserDefaults.standard.string(forKey: "displayName")!
     let em = UserDefaults.standard.string(forKey: "email")!
     var html = "&h=<h1>Incoming order from Room \(room)</h1><p>From: \(dn)"
-    html += "</p><p>Request: <b>\(item.name)</b></p><p>Date: \(d.string(from: Date()))"
-    html += "</p><a href='https://iconsportal.netlify.app/response?id=[\"\(item.id)\"]%26date=\(d.string(from: Date()))"
+    html += "</p><p>Request: <b>\(item.name)</b></p><p>Date: \(date)"
+    html += "</p><a href='https://iconsportal.netlify.app/response?id=[\"\(item.id)\"]%26date=\(date)"
     html += "%26room=\(room)%26mail=\(em)"
     html += "%26name=\(dn)"
     html += "'>Click to accept order on the iCons Portal</a>"
