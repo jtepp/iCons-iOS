@@ -16,7 +16,7 @@ struct itemList: View {
         })
         
         ){ item in
-            NavigationLink(destination: itemInfo(item: item)){
+            NavigationLink(destination: itemInfo(item: Binding<Item>.constant(item))){
                     VStack(alignment:.leading) {
                         Text(item.name)
                             .font(.headline)

@@ -6,68 +6,76 @@
 //
 
 import SwiftUI
+import FirebaseFirestore
 
 struct itemInfo: View {
-    @State var item: Item
+    @Binding var item: Item
     @State var confirming = false
     var body: some View {
-        HStack {
-            VStack(alignment: .leading) {
-                VStack(alignment: .leading){
-                    Text(item.category)
-                        .padding(.bottom,100)
-                    Text(String(Int(item.available))+" remaining")
-                        .font(.title)
-                        .bold()
-                    
-                }
-                .padding(.horizontal,20)
-                Spacer()
-                HStack {
-                    
-                    Button(action:{confirming = true}, label: {
-                        Text("REQUEST")
-                            .font(Font.system(size: 36, weight: .bold, design: .default))
+        ZStack {
+            HStack {
+                VStack(alignment: .leading) {
+                    VStack(alignment: .leading){
+                        Text(item.name)
+                            .font(.largeTitle)
                             .bold()
-                            .offset(y:-20)
-                            .foregroundColor(.white)
-                            .frame(width: UIScreen.main.bounds.width, height: 200, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                            .background(
-                                RoundedRectangle(cornerRadius: 50)
-                                    .fill(Color("green"))
-                            )
-                    })
-                    .edgesIgnoringSafeArea(.all)
-                    .offset(y:50)
-                    .sheet(isPresented: $confirming, content: {
-                        ZStack {
-                            Color("green")
-                                .edgesIgnoringSafeArea(.all)
-                                .colorScheme(.dark)
-                            Button(action: {
-                                sendEmail(item:item, c: $confirming)
-                                
-                                
-                            }, label: {
-                                Text("Confirm")
-                                    .padding()
-                                    .foregroundColor(.white)
-                                    .background(
-                                        Capsule()
-                                            .fill(Color("green"))
-                                            .colorScheme(.light)
-                                    )
-                                
-                            })
-                        }
-                    })
-                    
-                    
-                    
+                            .padding(.top,-20)
+                        Text(item.category)
+                            .padding(.bottom,100)
+                        Text(String(Int(item.available))+" remaining")
+                            .font(.title)
+                            .bold()
+                        
+                    }
+                    .padding(.horizontal,20)
+                    Spacer()
+                    HStack {
+                        
+                        Button(action:{confirming = true}, label: {
+                            Text("REQUEST")
+                                .font(Font.system(size: 36, weight: .bold, design: .default))
+                                .bold()
+                                .offset(y:-20)
+                                .foregroundColor(.white)
+                                .frame(width: UIScreen.main.bounds.width, height: 200, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 50)
+                                        .fill(Color("green"))
+                                )
+                        })
+                        .edgesIgnoringSafeArea(.all)
+                        .offset(y:50)
+                        .sheet(isPresented: $confirming, content: {
+                            ZStack {
+                                Color("green")
+                                    .edgesIgnoringSafeArea(.all)
+                                    .colorScheme(.dark)
+                                Button(action: {
+                                    sendEmail(item:item, c: $confirming)
+                                    
+                                    
+                                }, label: {
+                                    Text("Confirm")
+                                        .padding()
+                                        .foregroundColor(.white)
+                                        .background(
+                                            Capsule()
+                                                .fill(Color("green"))
+                                                .colorScheme(.light)
+                                        )
+                                    
+                                })
+                            }
+                        })
+                        
+                        
+                        
+                    }
                 }
             }
+            
         }
-        .navigationTitle(item.name)
+
         
     }
 }
@@ -75,7 +83,7 @@ struct itemInfo: View {
 struct itemInfo_Preview: PreviewProvider {
     static var previews: some View {
         NavigationView{
-            itemInfo(item: Item(id: "", name: "Name", category: "Category", available: 4))
+            itemInfo(item: Binding<Item>.constant(Item(id: "", name: "Name", category: "Category", available: 4)))
         }
     }
 }
