@@ -37,30 +37,30 @@ struct itemInfo: View {
                                     .fill(Color("green"))
                             )
                     })
-                        .edgesIgnoringSafeArea(.all)
-                        .offset(y:50)
-                        .sheet(isPresented: $confirming, content: {
-                            ZStack {
-                                Color("green")
-                                    .edgesIgnoringSafeArea(.all)
-                                    .colorScheme(.dark)
-                                Button(action: {
-                                    sendEmail(item:item, c: $confirming)
-                                        
-                                    
-                                }, label: {
-                                    Text("Confirm")
-                                        .padding()
-                                        .foregroundColor(.white)
-                                        .background(
-                                            Capsule()
-                                                .fill(Color("green"))
-                                                .colorScheme(.light)
-                                        )
-                                    
-                                })
-                            }
-                        })
+                    .edgesIgnoringSafeArea(.all)
+                    .offset(y:50)
+                    .sheet(isPresented: $confirming, content: {
+                        ZStack {
+                            Color("green")
+                                .edgesIgnoringSafeArea(.all)
+                                .colorScheme(.dark)
+                            Button(action: {
+                                sendEmail(item:item, c: $confirming)
+                                
+                                
+                            }, label: {
+                                Text("Confirm")
+                                    .padding()
+                                    .foregroundColor(.white)
+                                    .background(
+                                        Capsule()
+                                            .fill(Color("green"))
+                                            .colorScheme(.light)
+                                    )
+                                
+                            })
+                        }
+                    })
                     
                     
                     
@@ -83,21 +83,48 @@ struct itemInfo_Preview: PreviewProvider {
 let d = DateFormatter()
 
 func sendEmail(item:Item, c:Binding<Bool>) {
+    
+    let room = "220"
+    let dn = UserDefaults.standard.string(forKey: "displayName")!
+    let em = UserDefaults.standard.string(forKey: "email")!
+    var html = "&h=<h1>Incoming order from Room \(room)</h1><p>From: \(dn)"
+    html += "</p><p>Request: <b>\(item.name)</b></p><p>Date: \(d.string(from: Date()))"
+    html += "</p><a href='https://iconsportal.netlify.app/response?id=[\"\(item.id)\"]%26date=\(d.string(from: Date()))"
+    html += "%26room=\(room)%26mail=\(em)"
+    html += "%26name=\(dn)"
+    html += "'>Click to accept order on the iCons Portal</a>"
+    let u = "https://iconsportal.netlify.app/.netlify/functions/email?s=Order from room \(room)\(html)"
+    guard let url = u.getCleanedURL() else {
+        print("invalid url")
+        return
+    }
+    
     do {
-        let room = "220"
-        var html = "&h=<h1>Incoming%20order%20from%20Room%20220</h1><p>From:%20"+UserDefaults.standard.string(forKey: "displayName")!
-        html += "</p><p>Request:%20<b>" + item.name + "</b></p><p>Date:%20" + d.string(from: Date())
-        html += "</p><a%20href='https://iconsportal.netlify.app/response?id=[\"" + item.id + "\"]%26date=" + d.string(from: Date())
-        html += "%26room=" + room + "%26mail=" + UserDefaults.standard.string(forKey: "email")!
-        html += "%26name=" + UserDefaults.standard.string(forKey: "displayName")!
-        html += "'>Click%20to%20accept%20order%20on%20the%20iCons%20Portal</a>"
-        let u = "https://iconsportal.netlify.app/.netlify/functions/email?s=Order%20from%20room%20" + room + html + "";
-        let url = URL(string: u)!
         let response = try String(contentsOf: url)
         if response == "success" {
             c.wrappedValue = false
         }
+        
     } catch {
-        print("error in confirmation")
+        print("confirmation error")
     }
+    
+   
+    
+}
+
+extension String {
+ func getCleanedURL() -> URL? {
+    guard self.isEmpty == false else {
+        return nil
+    }
+    if let url = URL(string: self) {
+        return url
+    } else {
+        if let urlEscapedString = self.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed) , let escapedURL = URL(string: urlEscapedString){
+            return escapedURL
+        }
+    }
+    return nil
+ }
 }
