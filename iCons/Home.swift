@@ -12,17 +12,16 @@ import UIKit
 struct Home: View {
     
     var microsoftProvider : OAuthProvider?
+    @State var name = (UserDefaults.standard.string(forKey: "displayName") ?? nil)!
     
     init(){
         self.microsoftProvider = OAuthProvider(providerID: "microsoft.com")
     }
     
-    let PILLGONE:CGFloat = 200
+    let pill = PillView(showOnce: true, top: false)
     @State var signedOut = true
     @State var already = false
-    @State var name = UserDefaults.standard.string(forKey: "displayName")
-    @State var pillOffset:CGFloat = 200
-    @State var dragOffset:CGFloat = 0
+    
     let categories = ["All", "Chargers", "Supplies", "Textbooks", "Cables", "Workbooks"]
     var body: some View {
         
@@ -65,14 +64,10 @@ struct Home: View {
                     
                 }
                 .onAppear{
-                    name = UserDefaults.standard.string(forKey: "displayName")
-                    if name != "" && !signedOut && !already {
-                        already = true
-                        pillOffset = 0
-                        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(4)) {
-                            pillOffset = PILLGONE
-                            dragOffset = 0
-                        }
+                    name = UserDefaults.standard.string(forKey: "displayName")!
+                    if name != "" && !signedOut && pill.active {
+                        pill.text = "Welcome,\n\(UserDefaults.standard.string(forKey: "displayName")!)"
+                        pill.show()
                         
                     }
                 }
@@ -104,15 +99,8 @@ struct Home: View {
                                     UserDefaults.standard.setValue(authResult.user.email, forKey: "email")
                                     print(UserDefaults.standard.string(forKey: "displayName")!)
                                     print(UserDefaults.standard.string(forKey: "email")!)
-                                    already = true
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
-                                        pillOffset = 0
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(4)) {
-                                            pillOffset = PILLGONE
-                                            dragOffset = 0
-                                        }
-                                        
-                                    }
+                                    pill.text = "Welcome,\n\(authResult.user.displayName!)"
+                                    pill.show(showDelay: 1)
                                 }
                             }
                         }
@@ -131,19 +119,12 @@ struct Home: View {
                     if (UserDefaults.standard.string(forKey: "displayName") != nil && UserDefaults.standard.string(forKey: "email") != nil) {
                         signedOut = false
                         already = true
-                        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
-                            pillOffset = 0
-                            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(4)) {
-                                pillOffset = PILLGONE
-                                dragOffset = 0
-                            }
-                            
-                        }
+                        pill.show(showDelay: 1)
                     }
                 }
             })
             
-            PillView(pillOffset: $pillOffset, dragOffset: $dragOffset)
+            
             
         }
     }

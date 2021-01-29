@@ -8,14 +8,18 @@
 import SwiftUI
 
 struct PillView: View {
+    var showOnce: Bool = false
+    @State var active = true
+    @State var text: String = ""
     let PILLGONE:CGFloat = 200
-    @Binding var pillOffset: CGFloat
-    @Binding var dragOffset: CGFloat
+    let top: Bool
+    @State var pillOffset: CGFloat = 0
+    @State var dragOffset: CGFloat = 0
     @Environment(\.colorScheme) var colorScheme
     var body: some View {
         VStack{
             Spacer()
-            Text("Welcome,\n"+(UserDefaults.standard.string(forKey: "displayName") ?? "")!)
+            Text(text)
                 .multilineTextAlignment(.center)
                 .foregroundColor(.primary)
                 .font(.footnote)
@@ -47,6 +51,21 @@ struct PillView: View {
             
             
             
+        }
+    }
+    func dismiss(delay: Int = 4) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(delay)) {
+            pillOffset = top ? (-1 * PILLGONE) : PILLGONE
+            dragOffset = 0
+        }
+    }
+    func show(showDelay: Int = 0, dismissDelay: Int = 4) {
+        if active {
+            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(showDelay)) {
+                if showOnce {active = false}
+                pillOffset = 0
+                dismiss(delay: dismissDelay)
+            }
         }
     }
 }
