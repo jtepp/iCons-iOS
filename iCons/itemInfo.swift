@@ -25,21 +25,41 @@ struct itemInfo: View {
                 Spacer()
                 HStack {
                     
-                    Text("REQUEST")
-                        .font(Font.system(size: 36, weight: .bold, design: .default))
-                        .bold()
-                        .offset(y:-20)
+                    Button(action:{confirming = true}, label: {
+                        Text("REQUEST")
+                            .font(Font.system(size: 36, weight: .bold, design: .default))
+                            .bold()
+                            .offset(y:-20)
+                            .foregroundColor(.white)
+                            .frame(width: UIScreen.main.bounds.width, height: 200, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                            .background(
+                                RoundedRectangle(cornerRadius: 50)
+                                    .fill(Color("green"))
+                            )
+                    })
                         .edgesIgnoringSafeArea(.all)
-                        .foregroundColor(.white)
-                        .frame(width: UIScreen.main.bounds.width, height: 200, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                        .background(
-                            RoundedRectangle(cornerRadius: 50)
-                                .fill(Color("green"))
-                        )
                         .offset(y:50)
-                        .onTapGesture {
-                            confirming = true
-                        }
+                        .sheet(isPresented: $confirming, content: {
+                            ZStack {
+                                Color("green")
+                                    .edgesIgnoringSafeArea(.all)
+                                    .colorScheme(.dark)
+                                Button(action: {
+                                        confirming = false
+                                    
+                                }, label: {
+                                    Text("Confirm")
+                                        .padding()
+                                        .foregroundColor(.white)
+                                        .background(
+                                            Capsule()
+                                                .fill(Color("green"))
+                                                .colorScheme(.light)
+                                        )
+                                    
+                                })
+                            }
+                        })
                     
                     
                     

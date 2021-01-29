@@ -11,6 +11,7 @@ struct ModalView<Content: View>: View
 {
     @Environment(\.presentationMode) var presentationMode
     let content: Content
+    let done: Bool = false
     let title: String
     let dg = DragGesture()
     
@@ -28,13 +29,22 @@ struct ModalView<Content: View>: View
                 self.content
             }
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar(content: {
+            .toolbar{
                 ToolbarItem(placement: .principal, content: {
                     Text(title)
                 })
                 
-
-            })
+                ToolbarItem(placement: .navigationBarTrailing, content: {
+                    if done {
+                        Button("Done") {
+                            self.presentationMode.wrappedValue.dismiss()
+                        }
+                    }
+                    })
+                
+                
+                
+            }
         }
         .highPriorityGesture(dg)
     }
