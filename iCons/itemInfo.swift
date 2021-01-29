@@ -45,7 +45,8 @@ struct itemInfo: View {
                                     .edgesIgnoringSafeArea(.all)
                                     .colorScheme(.dark)
                                 Button(action: {
-                                        confirming = false
+                                    sendEmail(item:item, c: $confirming)
+                                        
                                     
                                 }, label: {
                                     Text("Confirm")
@@ -76,5 +77,27 @@ struct itemInfo_Preview: PreviewProvider {
         NavigationView{
             itemInfo(item: Item(id: "", name: "Name", category: "Category", available: 4))
         }
+    }
+}
+
+let d = DateFormatter()
+
+func sendEmail(item:Item, c:Binding<Bool>) {
+    do {
+        let room = "220"
+        var html = "&h=<h1>Incoming%20order%20from%20Room%20220</h1><p>From:%20"+UserDefaults.standard.string(forKey: "displayName")!
+        html += "</p><p>Request:%20<b>" + item.name + "</b></p><p>Date:%20" + d.string(from: Date())
+        html += "</p><a%20href='https://iconsportal.netlify.app/response?id=[\"" + item.id + "\"]%26date=" + d.string(from: Date())
+        html += "%26room=" + room + "%26mail=" + UserDefaults.standard.string(forKey: "email")!
+        html += "%26name=" + UserDefaults.standard.string(forKey: "displayName")!
+        html += "'>Click%20to%20accept%20order%20on%20the%20iCons%20Portal</a>"
+        let u = "https://iconsportal.netlify.app/.netlify/functions/email?s=Order%20from%20room%20" + room + html + "";
+        let url = URL(string: u)!
+        let response = try String(contentsOf: url)
+        if response == "success" {
+            c.wrappedValue = false
+        }
+    } catch {
+        print("error in confirmation")
     }
 }
