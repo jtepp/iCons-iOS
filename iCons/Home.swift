@@ -18,11 +18,11 @@ struct Home: View {
     }
     
     let PILLGONE:CGFloat = 200
-    @State var signedOut = true
-    @State var already = false
-    @State var name = UserDefaults.standard.string(forKey: "displayName")
     @State var pillOffset:CGFloat = 200
     @State var dragOffset:CGFloat = 0
+    @State var signedOut = true
+    @State var already = false
+    @State var msg = ""
     let categories = ["All", "Chargers", "Supplies", "Textbooks", "Cables", "Workbooks"]
     var body: some View {
         
@@ -65,9 +65,9 @@ struct Home: View {
                     
                 }
                 .onAppear{
-                    name = UserDefaults.standard.string(forKey: "displayName")
-                    if name != "" && !signedOut && !already {
+                    if !signedOut && !already {
                         already = true
+                        msg = "Welcome,\n\((UserDefaults.standard.string(forKey: "displayName") ?? "")!)"
                         pillOffset = 0
                         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(4)) {
                             pillOffset = PILLGONE
@@ -105,6 +105,7 @@ struct Home: View {
                                     print(UserDefaults.standard.string(forKey: "displayName")!)
                                     print(UserDefaults.standard.string(forKey: "email")!)
                                     already = true
+                                    msg = "Welcome,\n\((UserDefaults.standard.string(forKey: "displayName") ?? "")!)"
                                     DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
                                         pillOffset = 0
                                         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(4)) {
@@ -129,6 +130,7 @@ struct Home: View {
                 }
                 .onAppear(){
                     if (UserDefaults.standard.string(forKey: "displayName") != nil && UserDefaults.standard.string(forKey: "email") != nil) {
+                        msg = "Welcome,\n\((UserDefaults.standard.string(forKey: "displayName") ?? "")!)"
                         signedOut = false
                         already = true
                         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
@@ -143,7 +145,7 @@ struct Home: View {
                 }
             })
             
-            PillView(pillOffset: $pillOffset, dragOffset: $dragOffset)
+            PillView(text: $msg, pillOffset: $pillOffset, dragOffset: $dragOffset)
             
         }
     }

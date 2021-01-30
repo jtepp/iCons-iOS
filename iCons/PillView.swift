@@ -8,14 +8,18 @@
 import SwiftUI
 
 struct PillView: View {
-    let PILLGONE:CGFloat = 200
+    var PILLGONE:CGFloat = 200
+    @Binding var text: String
     @Binding var pillOffset: CGFloat
     @Binding var dragOffset: CGFloat
+    var top:Bool = false
     @Environment(\.colorScheme) var colorScheme
     var body: some View {
         VStack{
+            if !top {
             Spacer()
-            Text("Welcome,\n"+(UserDefaults.standard.string(forKey: "displayName") ?? "")!)
+            }
+            Text(text)
                 .multilineTextAlignment(.center)
                 .foregroundColor(.primary)
                 .font(.footnote)
@@ -45,7 +49,9 @@ struct PillView: View {
                     
                 )
             
-            
+            if top {
+            Spacer()
+            }
             
         }
     }

@@ -8,7 +8,54 @@
 import SwiftUI
 import FirebaseFirestore
 
+let rooms = [
+    "104",
+    "218",
+    "317",
+    "105",
+    "219",
+    "318",
+    "111",
+    "220",
+    "319",
+    "112",
+    "221",
+    "320",
+    "113",
+    "222",
+    "321",
+    "116",
+    "223",
+    "322",
+    "117",
+    "224",
+    "323",
+    "118",
+    "225",
+    "324",
+    "119",
+    "227",
+    "325",
+    "120",
+    "228",
+    "327",
+    "128",
+    "229",
+    "329",
+    "129",
+    "230",
+    "330",
+    "130",
+    "231",
+    "331",
+    "131"
+]
+
 struct itemInfo: View {
+    let PILLGONE:CGFloat = -200
+    @State var msg = ""
+    @State var pillOffset:CGFloat = -200
+    @State var dragOffset:CGFloat = 0
     @Binding var item: Item
     @State var confirming = false
     var body: some View {
@@ -31,7 +78,9 @@ struct itemInfo: View {
                     Spacer()
                     HStack {
                         
-                        Button(action:{confirming = true}, label: {
+                        Button(action:{
+                            confirming = true
+                        }, label: {
                             Text("REQUEST")
                                 .font(Font.system(size: 36, weight: .bold, design: .default))
                                 .bold()
@@ -51,9 +100,15 @@ struct itemInfo: View {
                                     .edgesIgnoringSafeArea(.all)
                                     .colorScheme(.dark)
                                 Button(action: {
-                                    sendEmail(item:item, c: $confirming)
-                                    
-                                    
+                                    msg = sendEmail(item:item, c: $confirming) ? "Order sent, check your email soon\nto see if your order was accepted" : "Error sending request\nCheck your network connection and try again"
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
+                                            pillOffset = -65
+                                            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(6)) {
+                                                pillOffset = PILLGONE
+                                                dragOffset = 0
+                                            }
+                                            
+                                        }
                                 }, label: {
                                     Text("Confirm")
                                         .padding()
@@ -73,9 +128,10 @@ struct itemInfo: View {
                     }
                 }
             }
+            PillView(PILLGONE: PILLGONE, text: $msg, pillOffset: $pillOffset, dragOffset: $dragOffset, top: true)
             
         }
-
+        
         
     }
 }
@@ -90,7 +146,7 @@ struct itemInfo_Preview: PreviewProvider {
 
 
 
-func sendEmail(item:Item, c:Binding<Bool>) {
+func sendEmail(item:Item, c:Binding<Bool>) -> Bool {
     let room = "220"
     let formatter = DateFormatter()
     formatter.dateStyle = .long
@@ -107,35 +163,37 @@ func sendEmail(item:Item, c:Binding<Bool>) {
     let u = "https://iconsportal.netlify.app/.netlify/functions/email?s=Order from room \(room)\(html)"
     guard let url = u.getCleanedURL() else {
         print("invalid url")
-        return
+        return false
     }
     
     do {
         let response = try String(contentsOf: url)
         if response == "success" {
             c.wrappedValue = false
+            return true
         }
-        
+        return false
     } catch {
         print("confirmation error")
+        c.wrappedValue = false
+        return false
     }
     
-   
     
 }
 
 extension String {
- func getCleanedURL() -> URL? {
-    guard self.isEmpty == false else {
+    func getCleanedURL() -> URL? {
+        guard self.isEmpty == false else {
+            return nil
+        }
+        if let url = URL(string: self) {
+            return url
+        } else {
+            if let urlEscapedString = self.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed) , let escapedURL = URL(string: urlEscapedString){
+                return escapedURL
+            }
+        }
         return nil
     }
-    if let url = URL(string: self) {
-        return url
-    } else {
-        if let urlEscapedString = self.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed) , let escapedURL = URL(string: urlEscapedString){
-            return escapedURL
-        }
-    }
-    return nil
- }
 }
