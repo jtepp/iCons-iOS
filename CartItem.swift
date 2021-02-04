@@ -9,46 +9,42 @@ import SwiftUI
 
 struct CartItem: View {
     @Binding var showCart: Bool
-    @Binding var item: Item
+    var item: String
     @Binding var cart: [String: Int]
     @State var quantityText = "0"
+    @State var exists = true
     var body: some View {
-        HStack {
-            Text(item.name)
+        HStack { if exists {
+            Text(item.split(separator: ",")[1])
                 .bold()
             Spacer()
             HStack{
-                TextField("", text: $quantityText, onCommit: {
-                    cart[item.id] = Int(quantityText) ?? 1
-                    if cart[item.id]! < 1 {
-                        cart.removeValue(forKey: item.id)
-                    }
-                })
-                    .keyboardType(.numberPad)
-                .frame(maxWidth: 40, maxHeight: 40)
-                .padding(4)
-                .foregroundColor(.white)
-                .background(Color.gray.opacity(0.8))
-                .cornerRadius(10)
-                .multilineTextAlignment(.center)
+                Text(String(cart[item]!))
+                    .padding(5)
+                    .background(
+                        RoundedRectangle(cornerRadius: 5)
+                            .stroke(lineWidth: 0.5)
+                            .foregroundColor(.gray)
+                    )
                 
-                    Image(systemName: "trash")
-                        .foregroundColor(.white)
-                        .frame(width: 40, height: 40)
-                        .background(Color.red)
-                        .cornerRadius(10)
-                        .onTapGesture {
-                            cart.removeValue(forKey: item.id)
-                            if cart.isEmpty {
-                                showCart = false
-                            }
+                Image(systemName: "trash")
+                    .foregroundColor(.white)
+                    .frame(width: 40, height: 40)
+                    .background(Color.red)
+                    .cornerRadius(10)
+                    .onTapGesture {
+                        exists = false
+                        cart.removeValue(forKey: item)
+                        if cart.isEmpty {
+                            showCart = false
                         }
+                    }
                 
-
-            }
+                
+            }}
         }
         .onAppear{
-            quantityText = String(cart[item.id]!)
+            quantityText = String(cart[item] ?? 0)
         }
     }
 }

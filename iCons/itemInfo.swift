@@ -86,7 +86,7 @@ struct itemInfo: View {
                     HStack {
                         Spacer()
                         Button(action:{
-                            cart[item.id] = (cart[item.id] != nil) ? (cart[item.id]! + quantity) : quantity
+                            cart[item.id+","+item.name] = (cart[item.id+","+item.name] != nil) ? (cart[item.id+","+item.name]! + quantity) : quantity
                             msg = "\(item.name) x\(quantity) added to cart"
                             DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(50)) {
                                 pillOffset = -30
