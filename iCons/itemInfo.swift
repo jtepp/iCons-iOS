@@ -113,53 +113,8 @@ struct itemInfo: View {
                         })
                         .disabled(item.available <= 0)
                         .sheet(isPresented: $showCart, content: {
-                            ZStack {
-                                Color("green")
-                                    .edgesIgnoringSafeArea(.all)
-                                    .colorScheme(.dark)
-                                VStack {
-                                    Button(action: {
-                                        msg = sendEmail(item:item, r: $roomText, c: $showCart) ? "Order sent, check your email soon\nto see if your order was accepted" : "Error sending request\nCheck your network connection and try again"
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
-                                            pillOffset = -65
-                                            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(6)) {
-                                                pillOffset = PILLGONE
-                                                dragOffset = 0
-                                            }
-                                            
-                                        }
-                                    }, label: {
-                                        Text("Confirm")
-                                            .padding()
-                                            .foregroundColor(.white)
-                                            .background(
-                                                Capsule()
-                                                    .fill(rooms.contains(roomText) ? Color("green") : Color.gray)
-                                                    .colorScheme(.light)
-                                            )
-                                        
-                                    }).disabled(!rooms.contains(roomText))
-                                    TextField("Room", text: $roomText)
-                                        .keyboardType(.numberPad)
-                                        .padding(.vertical, 5)
-                                        .padding(.horizontal, 10)
-                                        .background(
-                                            Capsule()
-                                                .fill(Color.white)
-                                            
-                                        )
-                                        .padding(.horizontal,100)
-                                        .padding(.vertical, 20)
-                                    
-                                    Text("Please enter a valid room number")
-                                        .foregroundColor(.white)
-                                        .font(.footnote)
-                                        .padding()
-                                        .opacity(!rooms.contains(roomText) ? 1 : 0)
-                                    
-                                }
-                                
-                            }
+                            CartView(showCart: $showCart, cart: $cart)
+
                         })
                         Spacer()
                     }
@@ -253,3 +208,52 @@ extension String {
         return nil
     }
 }
+
+
+//                            ZStack {
+//                                Color("green")
+//                                    .edgesIgnoringSafeArea(.all)
+//                                    .colorScheme(.dark)
+//                                VStack {
+//                                    Button(action: {
+//                                        msg = sendEmail(item:item, r: $roomText, c: $showCart) ? "Order sent, check your email soon\nto see if your order was accepted" : "Error sending request\nCheck your network connection and try again"
+//                                        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
+//                                            pillOffset = -65
+//                                            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(6)) {
+//                                                pillOffset = PILLGONE
+//                                                dragOffset = 0
+//                                            }
+//
+//                                        }
+//                                    }, label: {
+//                                        Text("Confirm")
+//                                            .padding()
+//                                            .foregroundColor(.white)
+//                                            .background(
+//                                                Capsule()
+//                                                    .fill(rooms.contains(roomText) ? Color("green") : Color.gray)
+//                                                    .colorScheme(.light)
+//                                            )
+//
+//                                    }).disabled(!rooms.contains(roomText))
+//                                    TextField("Room", text: $roomText)
+//                                        .keyboardType(.numberPad)
+//                                        .padding(.vertical, 5)
+//                                        .padding(.horizontal, 10)
+//                                        .background(
+//                                            Capsule()
+//                                                .fill(Color.white)
+//
+//                                        )
+//                                        .padding(.horizontal,100)
+//                                        .padding(.vertical, 20)
+//
+//                                    Text("Please enter a valid room number")
+//                                        .foregroundColor(.white)
+//                                        .font(.footnote)
+//                                        .padding()
+//                                        .opacity(!rooms.contains(roomText) ? 1 : 0)
+//
+//                                }
+//
+//                            }

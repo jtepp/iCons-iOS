@@ -83,20 +83,20 @@ struct Home: View {
                 ModalView(title: "Welcome") {
                     Button(action: {
                         self.microsoftProvider?.getCredentialWith(_: nil){credential, error in
-                            
+                
                             if error != nil {
                                 // Handle error.
                             }
-                            
+                
                             if let credential = credential {
-                                
-                                
+                
+                
                                 Auth.auth().signIn(with: credential) { (authResult, error) in
-                                    
+                
                                     if error != nil {
                                         // Handle error.
                                     }
-                                    
+                
                                     guard let authResult = authResult else {
                                         print("Couldn't get graph authResult")
                                         return
@@ -114,7 +114,7 @@ struct Home: View {
                                             pillOffset = PILLGONE
                                             dragOffset = 0
                                         }
-                                        
+                
                                     }
                                 }
                             }
@@ -128,7 +128,7 @@ struct Home: View {
                                     .fill(Color("green"))
                             )
                     }
-                    
+                
                 }
                 .onAppear(){
                     if (UserDefaults.standard.string(forKey: "displayName") != nil && UserDefaults.standard.string(forKey: "email") != nil) {
@@ -141,7 +141,7 @@ struct Home: View {
                                 pillOffset = PILLGONE
                                 dragOffset = 0
                             }
-                            
+                
                         }
                     }
                 }
@@ -184,3 +184,4 @@ struct CategoryLink: View {
         
     }
 }
+

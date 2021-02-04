@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0C3D8A6225CBB1C60086546B /* CartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C3D8A6125CBB1C60086546B /* CartView.swift */; };
+		0C3D8A6525CBB4F60086546B /* CartItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C3D8A6425CBB4F60086546B /* CartItem.swift */; };
 		0C7E602E25C12966001DE3B7 /* itemList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C7E602D25C12966001DE3B7 /* itemList.swift */; };
 		0CD6624825C268AF00F4D2E8 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CD6624725C268AF00F4D2E8 /* Item.swift */; };
 		0CD6624B25C2694000F4D2E8 /* ItemsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CD6624A25C2694000F4D2E8 /* ItemsViewModel.swift */; };
@@ -24,6 +26,8 @@
 
 /* Begin PBXFileReference section */
 		0132F89689276F49CF5E7216 /* Pods-iCons.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iCons.debug.xcconfig"; path = "Target Support Files/Pods-iCons/Pods-iCons.debug.xcconfig"; sourceTree = "<group>"; };
+		0C3D8A6125CBB1C60086546B /* CartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartView.swift; sourceTree = "<group>"; };
+		0C3D8A6425CBB4F60086546B /* CartItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartItem.swift; sourceTree = "<group>"; };
 		0C7E602D25C12966001DE3B7 /* itemList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = itemList.swift; sourceTree = "<group>"; };
 		0CD6624725C268AF00F4D2E8 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		0CD6624A25C2694000F4D2E8 /* ItemsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsViewModel.swift; sourceTree = "<group>"; };
@@ -57,6 +61,8 @@
 		0CF9231225BFD1D50013B3DA = {
 			isa = PBXGroup;
 			children = (
+				0C3D8A6125CBB1C60086546B /* CartView.swift */,
+				0C3D8A6425CBB4F60086546B /* CartItem.swift */,
 				0CF9231D25BFD1D50013B3DA /* iCons */,
 				0CF9231C25BFD1D50013B3DA /* Products */,
 				CAEFF81D7073B9F7F3ABF053 /* Pods */,
@@ -231,7 +237,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0C3D8A6225CBB1C60086546B /* CartView.swift in Sources */,
 				0C7E602E25C12966001DE3B7 /* itemList.swift in Sources */,
+				0C3D8A6525CBB4F60086546B /* CartItem.swift in Sources */,
 				0CD6624B25C2694000F4D2E8 /* ItemsViewModel.swift in Sources */,
 				0CE226D025C14758009B5B00 /* PillView.swift in Sources */,
 				0CD6624F25C26D6600F4D2E8 /* itemInfo.swift in Sources */,
