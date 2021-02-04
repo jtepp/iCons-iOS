@@ -34,14 +34,15 @@ struct PillView: View {
                 )
                 .animation(Animation.easeOut(duration: 1.5).speed(3))
                 .offset(x: 0, y: pillOffset+dragOffset)
-                .onTapGesture(perform: {
-                    pillOffset = PILLGONE
-                })
+//                .onTapGesture(perform: {
+//                    pillOffset = PILLGONE
+//                    print("tapped")
+//                })
                 .gesture(
                     DragGesture()
                         .onChanged{ gesture in
-                            dragOffset = abs(gesture.translation.height)
-                            
+//                            dragOffset = abs(gesture.translation.height)
+                            pillOffset = PILLGONE
                         }
                         .onEnded{ _ in
                             pillOffset = PILLGONE
@@ -54,6 +55,7 @@ struct PillView: View {
             }
             
         }
+        .padding()
     }
 }
 

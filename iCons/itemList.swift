@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct itemList: View {
+    @Binding var cart: [String: Int]
     var category: String
     @ObservedObject private var viewModel = ItemsViewModel()
     var body: some View {
@@ -16,7 +17,7 @@ struct itemList: View {
         })
         
         ){ item in
-            NavigationLink(destination: itemInfo(item: Binding<Item>.constant(item))){
+            NavigationLink(destination: itemInfo(cart: $cart, item: Binding<Item>.constant(item))){
                     VStack(alignment:.leading) {
                         Text(item.name)
                             .font(.headline)
@@ -36,8 +37,8 @@ struct itemList: View {
        
 }
 
-struct itemList_Previews: PreviewProvider {
-    static var previews: some View {
-        itemList(category: "All")
-    }
-}
+//struct itemList_Previews: PreviewProvider {
+//    static var previews: some View {
+//        itemList(category: "All")
+//    }
+//}

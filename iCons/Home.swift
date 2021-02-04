@@ -18,6 +18,7 @@ struct Home: View {
     }
     
     let PILLGONE:CGFloat = 200
+    @State var cart = [String: Int]()
     @State var pillOffset:CGFloat = 200
     @State var dragOffset:CGFloat = 0
     @State var signedOut = true
@@ -32,7 +33,7 @@ struct Home: View {
                     
                     
                     ForEach(categories, id: \.self){category in
-                        CategoryLink(category: category)
+                        CategoryLink(category: category, cart: $cart)
                         Spacer()
                     }
                     
@@ -44,6 +45,7 @@ struct Home: View {
                             UserDefaults.standard.setValue(nil, forKey: "email")
                             signedOut = true
                             already = false
+                            cart = [String: Int]()
                         } catch {
                             print("sign out error")
                         }
@@ -146,6 +148,9 @@ struct Home: View {
             })
             
             PillView(text: $msg, pillOffset: $pillOffset, dragOffset: $dragOffset)
+                .onTapGesture {
+                    pillOffset = PILLGONE
+                }
             
         }
     }
@@ -160,8 +165,9 @@ struct ContentView_Previews: PreviewProvider {
 
 struct CategoryLink: View {
     var category: String
+    @Binding var cart: [String: Int]
     var body: some View {
-        NavigationLink(destination: itemList(category: category)){
+        NavigationLink(destination: itemList(cart: $cart, category: category)){
             HStack {
                 Text(category)
                 Spacer()

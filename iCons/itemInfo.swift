@@ -53,65 +53,81 @@ let rooms = [
 
 struct itemInfo: View {
     let PILLGONE:CGFloat = -200
+    @Binding var cart: [String: Int]
     @State var msg = ""
     @State var pillOffset:CGFloat = -200
     @State var dragOffset:CGFloat = 0
+    @State var quantity = 1
     @Binding var item: Item
-    @State var confirming = false
+    @State var showCart = false
     @State var roomText = ""
     var body: some View {
         ZStack {
             HStack {
                 VStack(alignment: .leading) {
-                    VStack(alignment: .leading){
-                        Text(item.name)
-                            .font(.largeTitle)
-                            .bold()
-                            .padding(.top,-20)
-                        Text(item.category)
-                            .padding(.bottom,100)
-                        Text(String(Int(item.available))+" remaining")
-                            .font(.title)
-                            .bold()
-                        
-                    }
-                    .padding(.horizontal,20)
-                    Spacer()
                     HStack {
-                        
-                        Button(action:{
-                            confirming = true
-                        }, label: {
-                            Text("REQUEST")
-                                .font(Font.system(size: 36, weight: .bold, design: .default))
+                        VStack(alignment: .leading){
+                            Text(item.name)
+                                .font(.largeTitle)
                                 .bold()
-                                .offset(y:-20)
-                                .foregroundColor(.white)
-                                .frame(width: UIScreen.main.bounds.width, height: 200, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 50)
-                                        .fill(item.available <= 0 ? Color.gray : Color("green"))
-                                )
+                                .padding(.top,-20)
+                            Text(item.category)
+                                .padding(.bottom,100)
+                            Text(String(Int(item.available))+" remaining")
+                                .font(.title)
+                                .bold()
+                            
+                        }
+                        .padding(.horizontal)
+                        Spacer()
+                    }
+                    Spacer()
+                    
+                    HStack {
+                        Spacer()
+                        Button(action:{
+                            cart[item.id] = (cart[item.id] != nil) ? (cart[item.id]! + quantity) : quantity
+                            msg = "\(item.name) x\(quantity) added to cart"
+                            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(50)) {
+                                pillOffset = -30
+                                DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(6)) {
+                                    pillOffset = PILLGONE
+                                    dragOffset = 0
+                                }
+                                
+                            }
+                        }, label: {
+                            HStack {
+                                Image(systemName: "cart.badge.plus")
+                                    .font(.title)
+                                Text("ADD TO CART")
+                                    .font(.title)
+                                    .bold()
+                            }
+                            .foregroundColor(.white)
+                            .padding()
+                            .background(
+                                RoundedRectangle(cornerRadius: 50)
+                                    .fill(item.available <= 0 ? Color.gray : Color("green"))
+                            )
                         })
                         .disabled(item.available <= 0)
-                        .edgesIgnoringSafeArea(.all)
-                        .offset(y:50)
-                        .sheet(isPresented: $confirming, content: {
+                        .sheet(isPresented: $showCart, content: {
                             ZStack {
                                 Color("green")
                                     .edgesIgnoringSafeArea(.all)
                                     .colorScheme(.dark)
                                 VStack {
                                     Button(action: {
-                                        msg = sendEmail(item:item, r: $roomText, c: $confirming) ? "Order sent, check your email soon\nto see if your order was accepted" : "Error sending request\nCheck your network connection and try again"
-                                            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
-                                                pillOffset = -65
-                                                DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(6)) {
-                                                    pillOffset = PILLGONE
-                                                    dragOffset = 0
-                                                }
-                                                
+                                        msg = sendEmail(item:item, r: $roomText, c: $showCart) ? "Order sent, check your email soon\nto see if your order was accepted" : "Error sending request\nCheck your network connection and try again"
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
+                                            pillOffset = -65
+                                            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(6)) {
+                                                pillOffset = PILLGONE
+                                                dragOffset = 0
                                             }
+                                            
+                                        }
                                     }, label: {
                                         Text("Confirm")
                                             .padding()
@@ -130,31 +146,47 @@ struct itemInfo: View {
                                         .background(
                                             Capsule()
                                                 .fill(Color.white)
-                                                
+                                            
                                         )
                                         .padding(.horizontal,100)
                                         .padding(.vertical, 20)
-                                        
+                                    
                                     Text("Please enter a valid room number")
                                         .foregroundColor(.white)
                                         .font(.footnote)
                                         .padding()
                                         .opacity(!rooms.contains(roomText) ? 1 : 0)
-                                
+                                    
                                 }
                                 
                             }
                         })
-                        
-                        
-                        
+                        Spacer()
                     }
+                    .padding()
                 }
             }
             PillView(PILLGONE: PILLGONE, text: $msg, pillOffset: $pillOffset, dragOffset: $dragOffset, top: true)
+                .onTapGesture {
+                    pillOffset = PILLGONE
+                    showCart = true
+                }
             
-        }
-        
+        }.navigationBarItems(trailing:
+  
+                Button(action:{showCart = true}){
+                    Image(systemName:"cart")
+                        .overlay(
+                            Text(String(cart.count))
+                                .font(.caption2)
+                                .foregroundColor(cart.count > 0 ? .white : .clear)
+                                .padding(4)
+                                .background(Circle().fill(cart.count > 0 ? Color.red : Color.clear))
+                                .offset(x: 10.0, y: -10)
+                        )
+                }
+            )
+
         
     }
 }
@@ -162,7 +194,8 @@ struct itemInfo: View {
 struct itemInfo_Preview: PreviewProvider {
     static var previews: some View {
         NavigationView{
-            itemInfo(item: Binding<Item>.constant(Item(id: "", name: "Name", category: "Category", available: 4)))
+            itemInfo(cart: Binding<[String: Int]>.constant([String: Int]()), item: Binding<Item>.constant(Item(id: "", name: "Name", category: "Category", available: 4)))
+            
         }
     }
 }
