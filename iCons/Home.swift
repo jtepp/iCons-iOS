@@ -24,6 +24,7 @@ struct Home: View {
     @State var signedOut = true
     @State var already = false
     @State var msg = ""
+    @State var showCart = false
     let categories = ["All", "Chargers", "Supplies", "Textbooks", "Cables", "Workbooks"]
     var body: some View {
         
@@ -78,6 +79,24 @@ struct Home: View {
                         
                     }
                 }
+                .navigationBarItems(trailing:
+                                                
+                                                Button(action:{showCart = true}){
+                                                    Image(systemName:"cart")
+                                                        .overlay(
+                                                            Text(String(cart.count))
+                                                                .font(.caption2)
+                                                                .foregroundColor(cart.count > 0 ? .white : .clear)
+                                                                .padding(4)
+                                                                .background(Circle().fill(cart.count > 0 ? Color.red : Color.clear))
+                                                                .offset(x: 10.0, y: -10)
+                                                        )
+                                                }
+                        )
+                .sheet(isPresented: $showCart, content: {
+                    CartView(showCart: $showCart, cart: $cart, pillOffset: $pillOffset, dragOffset: $dragOffset, msg: $msg, show: $showCart)
+                    
+                })
             }
             .sheet(isPresented: $signedOut, content: {
                 ModalView(title: "Welcome") {
@@ -146,6 +165,7 @@ struct Home: View {
                     }
                 }
             })
+           
             
             PillView(text: $msg, pillOffset: $pillOffset, dragOffset: $dragOffset)
                 .onTapGesture {
@@ -153,6 +173,7 @@ struct Home: View {
                 }
             
         }
+        
     }
 }
 
