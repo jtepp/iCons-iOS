@@ -94,14 +94,16 @@ struct itemInfo: View {
                                         if (Int(quantityText) ?? 0) < 0 {
                                             quantityText = String(abs(Int(quantityText)!))
                                         }
-                                            quantity = Int(quantityText)!
+                                        if !quantityText.isEmpty {
+                                            quantity = Int(quantityText) ?? 1
+                                        }
                                     })
-                                .frame(width:50)
-                                .padding()
-                                .multilineTextAlignment(.trailing)
-                                .textFieldStyle(RoundedBorderTextFieldStyle())
+                                    .frame(width:50)
+                                    .padding()
+                                    .multilineTextAlignment(.trailing)
+                                    .textFieldStyle(RoundedBorderTextFieldStyle())
                             }
-
+                            
                             Button(action:{
                                 cart[item.id+","+item.name] = quantity
                                 msg = "Cart now contains \(quantity)x \(item.name)"
@@ -125,14 +127,14 @@ struct itemInfo: View {
                                 .padding()
                                 .background(
                                     RoundedRectangle(cornerRadius: 50)
-                                        .fill((item.available <= 0 || quantity < 0 || quantity > Int(item.available)) ? Color.gray : Color("green"))
+                                        .fill((item.available <= 0 || quantity <= 0 || quantity > Int(item.available)) ? Color.gray : Color("green"))
                                 )
                             })
-                            .disabled(item.available <= 0 || quantity < 0 || quantity > Int(item.available))
+                            .disabled(item.available <= 0 || quantity <= 0 || quantity > Int(item.available))
                             .sheet(isPresented: $showCart, content: {
                                 CartView(showCart: $showCart, cart: $cart)
-
-                        })
+                                
+                            })
                         }
                         Spacer()
                     }
@@ -140,26 +142,26 @@ struct itemInfo: View {
                 }
             }
             PillView(PILLGONE: PILLGONE, text: $msg, pillOffset: $pillOffset, dragOffset: $dragOffset, top: true)
-//                .onTapGesture {
-//                    pillOffset = PILLGONE
-//                    showCart = true
-//                }
+            //                .onTapGesture {
+            //                    pillOffset = PILLGONE
+            //                    showCart = true
+            //                }
             
         }.navigationBarItems(trailing:
-  
-                Button(action:{showCart = true}){
-                    Image(systemName:"cart")
-                        .overlay(
-                            Text(String(cart.count))
-                                .font(.caption2)
-                                .foregroundColor(cart.count > 0 ? .white : .clear)
-                                .padding(4)
-                                .background(Circle().fill(cart.count > 0 ? Color.red : Color.clear))
-                                .offset(x: 10.0, y: -10)
-                        )
-                }
-            )
-
+                                
+                                Button(action:{showCart = true}){
+                                    Image(systemName:"cart")
+                                        .overlay(
+                                            Text(String(cart.count))
+                                                .font(.caption2)
+                                                .foregroundColor(cart.count > 0 ? .white : .clear)
+                                                .padding(4)
+                                                .background(Circle().fill(cart.count > 0 ? Color.red : Color.clear))
+                                                .offset(x: 10.0, y: -10)
+                                        )
+                                }
+        )
+        
         
     }
 }
