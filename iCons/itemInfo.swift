@@ -58,6 +58,7 @@ struct itemInfo: View {
     @State var pillOffset:CGFloat = -200
     @State var dragOffset:CGFloat = 0
     @State var quantity = 1
+    @State var quantityText = "1"
     @Binding var item: Item
     @State var showCart = false
     @State var roomText = ""
@@ -85,47 +86,64 @@ struct itemInfo: View {
                     
                     HStack {
                         Spacer()
-                        Button(action:{
-                            cart[item.id+","+item.name] = (cart[item.id+","+item.name] != nil) ? (cart[item.id+","+item.name]! + quantity) : quantity
-                            msg = "\(item.name) x\(quantity) added to cart"
-                            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(50)) {
-                                pillOffset = -30
-                                DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(6)) {
-                                    pillOffset = PILLGONE
-                                    dragOffset = 0
-                                }
-                                
-                            }
-                        }, label: {
+                        VStack {
                             HStack {
-                                Image(systemName: "cart.badge.plus")
-                                    .font(.title)
-                                Text("ADD TO CART")
-                                    .font(.title)
-                                    .bold()
+                                Text("Quantity to order:")
+                                TextField("", text: $quantityText)
+                                    .onChange(of: quantityText, perform: { _ in
+                                        if (Int(quantityText) ?? 0) < 0 {
+                                            quantityText = String(abs(Int(quantityText)!))
+                                        }
+                                            quantity = Int(quantityText)!
+                                    })
+                                .frame(width:50)
+                                .padding()
+                                .multilineTextAlignment(.trailing)
+                                .textFieldStyle(RoundedBorderTextFieldStyle())
                             }
-                            .foregroundColor(.white)
-                            .padding()
-                            .background(
-                                RoundedRectangle(cornerRadius: 50)
-                                    .fill(item.available <= 0 ? Color.gray : Color("green"))
-                            )
-                        })
-                        .disabled(item.available <= 0)
-                        .sheet(isPresented: $showCart, content: {
-                            CartView(showCart: $showCart, cart: $cart)
+
+                            Button(action:{
+                                cart[item.id+","+item.name] = quantity
+                                msg = "Cart now contains \(quantity)x \(item.name)"
+                                DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(50)) {
+                                    pillOffset = -65
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(6)) {
+                                        pillOffset = PILLGONE
+                                        dragOffset = 0
+                                    }
+                                    
+                                }
+                            }, label: {
+                                HStack {
+                                    Image(systemName: "cart.badge.plus")
+                                        .font(.title)
+                                    Text("ADD TO CART")
+                                        .font(.title)
+                                        .bold()
+                                }
+                                .foregroundColor(.white)
+                                .padding()
+                                .background(
+                                    RoundedRectangle(cornerRadius: 50)
+                                        .fill((item.available <= 0 || quantity < 0 || quantity > Int(item.available)) ? Color.gray : Color("green"))
+                                )
+                            })
+                            .disabled(item.available <= 0 || quantity < 0 || quantity > Int(item.available))
+                            .sheet(isPresented: $showCart, content: {
+                                CartView(showCart: $showCart, cart: $cart)
 
                         })
+                        }
                         Spacer()
                     }
                     .padding()
                 }
             }
             PillView(PILLGONE: PILLGONE, text: $msg, pillOffset: $pillOffset, dragOffset: $dragOffset, top: true)
-                .onTapGesture {
-                    pillOffset = PILLGONE
-                    showCart = true
-                }
+//                .onTapGesture {
+//                    pillOffset = PILLGONE
+//                    showCart = true
+//                }
             
         }.navigationBarItems(trailing:
   
