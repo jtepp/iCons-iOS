@@ -29,68 +29,74 @@ struct CartView: View {
                 CartItem(showCart: $showCart, item: "\(item.id),\(item.name)", cart: $cart)
             }
             Spacer()
-            Button(action: {confirming = true}, label: {
-                Text("Send Order")
-                    .padding()
-                    .background(
-                        Capsule()
-                            .fill(Color("green"))
-                    )
-            }).sheet(isPresented: $confirming, content: {
-                ZStack {
-                    Color("green")
-                        .edgesIgnoringSafeArea(.all)
-                        .colorScheme(.dark)
-                    VStack {
-                        HStack {
-                            Spacer()
-                            Button(action: {
-                                msg = sendEmail(cart:cart, r: $roomText, c: $showCart) ? "Order sent, check your email soon\nto see if your order was accepted" : "Error sending request\nCheck your network connection and try again"
-                                show = false
-                                DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
-                                    pillOffset = -65
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(6)) {
-                                        pillOffset = PILLGONE
-                                        dragOffset = 0
+            HStack {
+                Spacer()
+                Button(action: {confirming = true}, label: {
+                    Text("Send Order")
+                        .padding()
+                        .background(
+                            Capsule()
+                                .fill(Color("green"))
+                        )
+                }).sheet(isPresented: $confirming, content: {
+                    ZStack {
+                        Color("green")
+                            .edgesIgnoringSafeArea(.all)
+                            .colorScheme(.dark)
+                        VStack {
+                            HStack {
+                                Spacer()
+                                Button(action: {
+                                    msg = sendEmail(cart:cart, r: $roomText, c: $showCart) ? "Order sent, check your email soon\nto see if your order was accepted" : "Error sending request\nCheck your network connection and try again"
+                                    show = false
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
+                                        pillOffset = -65
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(6)) {
+                                            pillOffset = PILLGONE
+                                            dragOffset = 0
+                                        }
+
                                     }
+                                }, label: {
+                                    Text("Confirm")
+                                        .padding()
+                                        .foregroundColor(.white)
+                                        .background(
+                                            Capsule()
+                                                .fill(rooms.contains(roomText) ? Color("green") : Color.gray)
+                                                .colorScheme(.light)
+                                        )
 
-                                }
-                            }, label: {
-                                Text("Confirm")
-                                    .padding()
-                                    .foregroundColor(.white)
-                                    .background(
-                                        Capsule()
-                                            .fill(rooms.contains(roomText) ? Color("green") : Color.gray)
-                                            .colorScheme(.light)
-                                    )
+                            }).disabled(!rooms.contains(roomText))
+                                .foregroundColor(.white)
+                                Spacer()
+                            }
+                            TextField("Room", text: $roomText)
+                                .keyboardType(.numberPad)
+                                .padding(.vertical, 5)
+                                .padding(.horizontal, 10)
+                                .background(
+                                    Capsule()
+                                        .fill(Color.white)
 
-                        }).disabled(!rooms.contains(roomText))
-                            .foregroundColor(.white)
-                            Spacer()
+                                )
+                                .padding(.horizontal,100)
+                                .padding(.vertical, 20)
+
+                            Text("Please enter a valid room number")
+                                .foregroundColor(.white)
+                                .font(.footnote)
+                                .padding()
+                                .opacity(!rooms.contains(roomText) ? 1 : 0)
+
                         }
-                        TextField("Room", text: $roomText)
-                            .keyboardType(.numberPad)
-                            .padding(.vertical, 5)
-                            .padding(.horizontal, 10)
-                            .background(
-                                Capsule()
-                                    .fill(Color.white)
-
-                            )
-                            .padding(.horizontal,100)
-                            .padding(.vertical, 20)
-
-                        Text("Please enter a valid room number")
-                            .foregroundColor(.white)
-                            .font(.footnote)
-                            .padding()
-                            .opacity(!rooms.contains(roomText) ? 1 : 0)
 
                     }
-
-                }
             })
+                .foregroundColor(.white)
+                .disabled(cart.isEmpty)
+                Spacer()
+            }
             
         }
         .padding()
