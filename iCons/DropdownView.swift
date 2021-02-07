@@ -1,6 +1,6 @@
 //
 //  DropdownView.swift
-//  Pods
+//  iCons
 //
 //  Created by Jacob Tepperman on 2021-02-06.
 //
@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct DropdownView: View {
-    var views: [Any]
+    var views: [AnyView]
     var heading: String = "Heading"
     var width: CGFloat = UIScreen.main.bounds.width-40
     @State var height: CGFloat = 40
@@ -21,7 +21,18 @@ struct DropdownView: View {
                     RoundedRectangle(cornerRadius: 20)
                 )
                 .frame(width: width, height: height)
-                
+                .overlay(
+                    ZStack {
+                        ForEach(views.indices){ v in
+                            views[v]
+                                .offset(y:
+                                            height == 40 ? 0 : CGFloat((v)*40-30)
+                                )
+                        }
+                        
+                    }
+                )
+            
             
             
             HStack {
@@ -44,7 +55,7 @@ struct DropdownView: View {
                 default: imageRotation = 0
                 }
                 switch(height){
-                case 40: height = CGFloat(40*views.count)
+                case 40: height = CGFloat(80+40*views.count)
                 default: height = 40
                 }
                 
@@ -56,11 +67,21 @@ struct DropdownView: View {
 
 struct DropdownView_Previews: PreviewProvider {
     static var previews: some View {
-        ZStack {
-            Color("green")
-            DropdownView(views: testViews)
+        
+        NavigationView {
+            
+            ZStack {
+                Color("green")
+                    .edgesIgnoringSafeArea(.all)
+                VStack {
+                    DropdownView(views: testViews)
+                    Spacer()
+                }
+            }
+            
+            
+            
         }
-        .edgesIgnoringSafeArea(.all)
     }
 }
 
@@ -69,20 +90,26 @@ let testViews = [
         destination: Text("Destination1"),
         label: {
             Text("Navigate1")
-        }),
+        }).anyview(),
     NavigationLink(
         destination: Text("Destination2"),
         label: {
             Text("Navigate2")
-        }),
+        }).anyview(),
     NavigationLink(
         destination: Text("Destination2"),
         label: {
             Text("Navigate2")
-        }),
+        }).anyview(),
     NavigationLink(
         destination: Text("Destination3"),
         label: {
             Text("Navigate3")
-        })
+        }).anyview()
 ]
+
+extension View {
+    func anyview() -> AnyView {
+        return AnyView(self)
+    }
+}
