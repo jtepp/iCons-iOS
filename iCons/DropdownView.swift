@@ -25,7 +25,7 @@ struct DropdownView: View {
                 .overlay(
                     ZStack {
                         HStack {
-                            VStack(alignment: .leading) {
+                            VStack {
                                 ForEach(items.indices){ i in
                                     NavigationLink(destination: views[i]){
                                         HStack {
@@ -37,7 +37,7 @@ struct DropdownView: View {
                                                     .font(.footnote)
                                                     .foregroundColor(.secondary)
                                                     .offset(y:
-                                                        height == 40 ? -4 : 0
+                                                                height == 40 ? -4 : 0
                                                     )
                                             }
                                             Spacer()
@@ -45,13 +45,21 @@ struct DropdownView: View {
                                                 .foregroundColor(.primary)
                                                 .padding(.trailing, -12)
                                         }
+                                        .overlay(
+                                            Rectangle()
+                                                .fill(i == items.count - 1 ? Color.clear : Color.secondary)
+                                            .frame(width:width-20, height: 1)
+                                                .offset(x: 4, y:
+                                            height == 40 ? -4 : 20
+                                            )
+                                        )
                                     }
                                     .padding(.horizontal)
                                     .frame(height: 40)
                                     .offset(y:
-                                                height == 40 ? CGFloat(dumbNum(i: i, count: items.count) * -40) : 20
+                                                height == 40 ? CGFloat(dumbNum(i: i, count: items.count) * -40) : 25
                                     )
-                                   
+                                    
                                 }
                             }
                             Spacer()
@@ -82,7 +90,7 @@ struct DropdownView: View {
                 default: imageRotation = 0
                 }
                 switch(height){
-                case 40: height = CGFloat(70+40*items.count)
+                case 40: height = CGFloat(60+40*items.count)
                 default: height = 40
                 }
                 
