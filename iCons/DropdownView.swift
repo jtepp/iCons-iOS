@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct DropdownView: View {
+    var items: [Item]
     var views: [AnyView]
     var heading: String = "Heading"
     var width: CGFloat = UIScreen.main.bounds.width-40
@@ -23,11 +24,37 @@ struct DropdownView: View {
                 .frame(width: width, height: height)
                 .overlay(
                     ZStack {
-                        ForEach(views.indices){ v in
-                            views[v]
-                                .offset(y:
-                                            height == 40 ? 0 : CGFloat((v)*40-30)
-                                )
+                        HStack {
+                            VStack(alignment: .leading) {
+                                ForEach(items.indices){ i in
+                                    NavigationLink(destination: views[i]){
+                                        HStack {
+                                            VStack(alignment: .leading) {
+                                                Text(items[i].name)
+                                                    .foregroundColor(.primary)
+                                                    .font(.system(size: 14, weight: .semibold, design:.default))
+                                                Text(String(Int(items[i].available))+" remaining")
+                                                    .font(.footnote)
+                                                    .foregroundColor(.secondary)
+                                                    .offset(y:
+                                                        height == 40 ? -4 : 0
+                                                    )
+                                            }
+                                            Spacer()
+                                            Image(systemName: "chevron.right.circle")
+                                                .foregroundColor(.primary)
+                                                .padding(.trailing, -12)
+                                        }
+                                    }
+                                    .padding(.horizontal)
+                                    .frame(height: 40)
+                                    .offset(y:
+                                                height == 40 ? CGFloat(dumbNum(i: i, count: items.count) * -40) : 20
+                                    )
+                                   
+                                }
+                            }
+                            Spacer()
                         }
                         
                     }
@@ -55,7 +82,7 @@ struct DropdownView: View {
                 default: imageRotation = 0
                 }
                 switch(height){
-                case 40: height = CGFloat(80+40*views.count)
+                case 40: height = CGFloat(70+40*items.count)
                 default: height = 40
                 }
                 
@@ -74,7 +101,7 @@ struct DropdownView_Previews: PreviewProvider {
                 Color("green")
                     .edgesIgnoringSafeArea(.all)
                 VStack {
-                    DropdownView(views: testViews)
+                    DropdownView(items: testItems, views: testViews)
                     Spacer()
                 }
             }
@@ -85,31 +112,30 @@ struct DropdownView_Previews: PreviewProvider {
     }
 }
 
+let testItems = [Item(id: "", name: "Scissors", category: "Supplies", available: 30),Item(id: "", name: "Paper", category: "Supplies", available: 18),Item(id: "", name: "Charger", category: "Chargers", available: 9),Item(id: "", name: "Paper", category: "Supplies", available: 18),Item(id: "", name: "Charger", category: "Chargers", available: 9),Item(id: "", name: "Paper", category: "Supplies", available: 18),Item(id: "", name: "Charger", category: "Chargers", available: 9),Item(id: "", name: "Paper", category: "Supplies", available: 18),Item(id: "", name: "Charger", category: "Chargers", available: 9)]
+
 let testViews = [
-    NavigationLink(
-        destination: Text("Destination1"),
-        label: {
-            Text("Navigate1")
-        }).anyview(),
-    NavigationLink(
-        destination: Text("Destination2"),
-        label: {
-            Text("Navigate2")
-        }).anyview(),
-    NavigationLink(
-        destination: Text("Destination2"),
-        label: {
-            Text("Navigate2")
-        }).anyview(),
-    NavigationLink(
-        destination: Text("Destination3"),
-        label: {
-            Text("Navigate3")
-        }).anyview()
+    Text("asfasd").anyview(),
+    Text("asfasd").anyview(),
+    Text("asfasd").anyview(),
+    Text("asfasd").anyview(),
+    Text("asfasd").anyview(),
+    Text("asfasd").anyview(),
+    Text("asfasd").anyview(),
+    Text("asfasd").anyview(),
+    Text("asfasd").anyview(),
+    Text("asfasd").anyview(),
+    Text("asfasd").anyview(),
+    Text("asfasd").anyview(),
+    Text("asfasd").anyview()
 ]
 
 extension View {
     func anyview() -> AnyView {
         return AnyView(self)
     }
+}
+
+func dumbNum(i:Int, count:Int) -> CGFloat {
+    return CGFloat(Double(i) - Double(count)/2)
 }
