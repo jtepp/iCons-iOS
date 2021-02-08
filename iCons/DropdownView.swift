@@ -66,6 +66,7 @@ struct DropdownView: View {
                         }
                         
                     }
+                    .opacity(height == 40 ? 0 : 1)
                 )
             
             
