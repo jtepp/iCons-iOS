@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct DropdownView: View {
-    @ObservedObject private var viewModel = ItemsViewModel()
+//    @ObservedObject private var viewModel = ItemsViewModel()
+    @Binding var items: [Item]
     @Binding var cart: [String: Int]
     var heading: String = "Heading"
     var width: CGFloat = UIScreen.main.bounds.width-40
@@ -38,16 +39,16 @@ struct DropdownView: View {
                 ZStack {
                     HStack {
                         VStack {
-                            ForEach(viewModel.subItems(heading: heading).indices, id: \.self){ i in
+                            ForEach(items.indices, id: \.self){ i in
                                 NavigationLink(
-                                    destination: itemInfo(cart: $cart, item: Binding<Item>.constant(viewModel.subItems(heading: heading)[i]))
+                                    destination: itemInfo(cart: $cart, item: Binding<Item>.constant(items[i]))
                                 ){
                                     HStack {
                                         VStack(alignment: .leading) {
-                                            Text(viewModel.subItems(heading: heading)[i].name)
+                                            Text(items[i].name)
                                                 .foregroundColor(textColor)
                                                 .font(.system(size: 14, weight: .semibold, design:.default))
-                                            Text(String(Int(viewModel.subItems(heading: heading)[i].available))+" remaining")
+                                            Text(String(Int(items[i].available))+" remaining")
                                                 .font(.footnote)
                                                 .foregroundColor(secondTextColor)
                                                 .offset(y:
@@ -61,7 +62,7 @@ struct DropdownView: View {
                                     }
                                     .overlay(
                                         Rectangle()
-                                            .fill(i == viewModel.subItems(heading: heading).count - 1 ? Color.clear : secondTextColor)
+                                            .fill(i == items.count - 1 ? Color.clear : secondTextColor)
                                             .frame(width:width-20, height: 1)
                                             .offset(x: 4, y:
                                                         height == 40 ? -4 : 20
@@ -71,7 +72,7 @@ struct DropdownView: View {
                                 .padding(.horizontal)
                                 .frame(height: 40)
                                 .offset(y:
-                                            height == 40 ? CGFloat(dumbNum(i: i, count: viewModel.subItems(heading: heading).count) * -40) : 25
+                                            height == 40 ? CGFloat(dumbNum(i: i, count: items.count) * -40) : 25
                                 )
                             }
                         }
@@ -115,19 +116,15 @@ struct DropdownView: View {
                 }
             )
             .onTapGesture {
-                viewModel.fetchData()
                 switch(imageRotation){
                 case 0: imageRotation = 90
                 default: imageRotation = 0
                 }
                 switch(height){
-                case 40: height = CGFloat(60+40*viewModel.subItems(heading: heading).count)
+                case 40: height = CGFloat(60+40*items.count)
                 default: height = 40
                 }
                 
-            }
-            .onAppear{
-                viewModel.fetchData()
             }
         }.animation(.easeOut)
         

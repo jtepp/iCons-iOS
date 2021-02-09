@@ -11,6 +11,7 @@ struct itemList: View {
     @Binding var cart: [String: Int]
     var category: String
     @ObservedObject private var viewModel = ItemsViewModel()
+    @State var nextItems = [Item]()
     @State var showCart = false
     let PILLGONE:CGFloat = 200
     @State var pillOffset:CGFloat = 200
@@ -26,6 +27,7 @@ struct itemList: View {
                     })), id: \.self){ s in
                         
                         DropdownView(
+                            items: filtered(array: $nextItems, sub: s),
                             cart: $cart, 
                             heading: s,
                             color: Color("green"),
@@ -56,7 +58,7 @@ struct itemList: View {
                 PillView(text: $msg, pillOffset: $pillOffset, dragOffset: $dragOffset)
             }
             .onAppear{
-                self.viewModel.fetchData()
+                self.viewModel.fetchInOut(array: $nextItems)
         }
         }
     }
@@ -80,4 +82,12 @@ func subList(items: [Item]) -> [String] {
         }
     }
     return subs
+}
+
+func filtered(array: Binding<[Item]>, sub: String) -> Binding<[Item]> {
+    let a = array.wrappedValue.filter { (i) -> Bool in
+        i.sub.lowercased() == sub.lowercased()
+    }
+    return Binding<[Item]>.constant(a)
+    
 }
