@@ -14,7 +14,6 @@ class ItemsViewModel: ObservableObject {
     
     func fetchData() {
         db.collection("items").addSnapshotListener{ (querySnapshot, error) in
-            
             guard let documents = querySnapshot?.documents else {
                 print("no documents")
                 return
@@ -25,11 +24,18 @@ class ItemsViewModel: ObservableObject {
                 
                 let name = data["name"] as? String ?? ""
                 let category = data["category"] as? String ?? ""
+                let sub = data["sub"] as? String ?? ""
                 let available = data["available"] as? Double ?? 0
                 
-                
-                return Item(id: queryDocumentSnapshot.documentID, name: name, category: category, available: available)
+                return Item(id: queryDocumentSnapshot.documentID, name: name, category: category, sub: sub, available: available)
             }
+        }
+    }
+    
+    func subItems(heading:String) -> [Item] {
+//        self.fetchData()
+        return self.items.filter { (item) -> Bool in
+            item.sub.lowercased() == heading.lowercased()
         }
     }
 }
