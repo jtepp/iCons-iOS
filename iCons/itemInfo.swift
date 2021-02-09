@@ -100,6 +100,7 @@ struct itemInfo: View {
                                     .frame(width:50)
                                     .padding()
                                     .multilineTextAlignment(.trailing)
+                                    .keyboardType(.numberPad)
                                     .textFieldStyle(RoundedBorderTextFieldStyle())
                             }
                             
