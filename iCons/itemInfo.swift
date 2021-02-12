@@ -53,7 +53,7 @@ let rooms = [
 
 struct itemInfo: View {
     let PILLGONE:CGFloat = -300
-    @Binding var cart: [String: Int]
+    @Binding var cart: [CartItem]
     @State var msg = ""
     @State var pillOffset:CGFloat = -200
     @State var dragOffset:CGFloat = 0
@@ -106,7 +106,7 @@ struct itemInfo: View {
                             
                             Button(action:{
                                 msg = "Cart now contains \(quantity)x \(item.name)"
-                                cart[item.id+","+item.name] = quantity
+                                cart.append(CartItem(item: item, quantity: quantity))
                                 DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(50)) {
                                     pillOffset = -75
                                     DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(6)) {
@@ -166,13 +166,13 @@ struct itemInfo: View {
     }
 }
 
-struct itemInfo_Preview: PreviewProvider {
-    static var previews: some View {
-        NavigationView{
-            itemInfo(cart: Binding<[String: Int]>.constant([String: Int]()), item: Binding<Item>.constant(Item(id: "", name: "Name", category: "Category", available: 4)))
-            
-        }
-    }
-}
-
-
+//struct itemInfo_Preview: PreviewProvider {
+//    static var previews: some View {
+//        NavigationView{
+//            itemInfo(cart: Binding<[String: Int]>.constant([String: Int]()), item: Binding<Item>.constant(Item(id: "", name: "Name", category: "Category", available: 4)))
+//            
+//        }
+//    }
+//}
+//
+//

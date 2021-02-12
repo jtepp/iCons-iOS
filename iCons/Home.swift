@@ -18,7 +18,7 @@ struct Home: View {
     }
     
     let PILLGONE:CGFloat = 200
-    @State var cart = [String: Int]()
+    @State var cart = [CartItem]()
     @State var pillOffset:CGFloat = 200
     @State var dragOffset:CGFloat = 0
     @State var signedOut = true
@@ -46,7 +46,7 @@ struct Home: View {
                             UserDefaults.standard.setValue(nil, forKey: "email")
                             signedOut = true
                             already = false
-                            cart = [String: Int]()
+                            cart = [CartItem]()
                         } catch {
                             print("sign out error")
                         }
@@ -186,7 +186,7 @@ struct ContentView_Previews: PreviewProvider {
 
 struct CategoryLink: View {
     var category: String
-    @Binding var cart: [String: Int]
+    @Binding var cart: [CartItem]
     var body: some View {
         NavigationLink(destination: itemList(cart: $cart, category: category)){
             HStack {

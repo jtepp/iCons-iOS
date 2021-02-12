@@ -10,16 +10,16 @@ import SwiftUI
 struct CartItemView: View {
     @Binding var showCart: Bool
     var item: String
-    @Binding var cart: [String: Int]
+    @Binding var cart: [CartItem]
     @State var quantityText = "0"
     @State var exists = true
     var body: some View {
         HStack { if exists {
-            Text(item.split(separator: ",")[1])
+            Text(item)
                 .bold()
             Spacer()
             HStack{
-                Text(String(cart[item]!))
+                Text(String(quantityText))
                     .padding(5)
                     .background(
                         RoundedRectangle(cornerRadius: 5)
@@ -34,7 +34,9 @@ struct CartItemView: View {
                     .cornerRadius(10)
                     .onTapGesture {
                         exists = false
-                        cart.removeValue(forKey: item)
+                        cart.removeAll { (i) -> Bool in
+                            i.item.name == item
+                        }
                         if cart.isEmpty {
                             showCart = false
                         }
@@ -44,7 +46,9 @@ struct CartItemView: View {
             }}
         }
         .onAppear{
-            quantityText = String(cart[item] ?? 0)
+            quantityText = String(cart.first { (i) -> Bool in
+                i.item.name == item
+            }?.quantity ?? 0)
         }
     }
 }

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct itemList: View {
-    @Binding var cart: [String: Int]
+    @Binding var cart: [CartItem]
     var category: String
     @ObservedObject private var viewModel = ItemsViewModel()
     @State var nextItems = [Item]()
@@ -65,13 +65,13 @@ struct itemList: View {
     
 }
 
-struct itemList_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationView {
-            itemList(cart: Binding<[String : Int]>.constant([String : Int]()), category: "All")
-        }
-    }
-}
+//struct itemList_Previews: PreviewProvider {
+//    static var previews: some View {
+//        NavigationView {
+//            itemList(cart: Binding<[String : Int]>.constant([String : Int]()), category: "All")
+//        }
+//    }
+//}
 
 
 func subList(items: [Item]) -> [String] {
