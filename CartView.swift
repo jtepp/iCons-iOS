@@ -10,7 +10,7 @@ import SwiftUI
 struct CartView: View {
     let PILLGONE:CGFloat = -300
     @Binding var showCart: Bool
-    @Binding var cart: [CartItem]
+    @Binding var cart: [String: Int]
     @ObservedObject private var viewModel = ItemsViewModel()
     @State var confirming = false
     @State var roomText = ""
@@ -23,11 +23,8 @@ struct CartView: View {
             Text("Your Cart")
                 .font(.largeTitle)
                 .bold()
-            List(viewModel.items.filter({ (it) -> Bool in
-//                cart["\(item.id),\(item.name)"] != nil
-                cart.contains { (i) -> Bool in
-                    i.item.name == it.name
-                }
+            List(viewModel.items.filter({ (item) -> Bool in
+                cart["\(item.id),\(item.name)"] != nil
             })){ item in
                 CartItemView(showCart: $showCart, item: "\(item.id),\(item.name)", cart: $cart)
             }
@@ -54,7 +51,7 @@ struct CartView: View {
                                 Button(action: {
                                     msg = sendEmail(cart:cart, r: $roomText, c: $showCart) ? "Order sent, check your email soon\nto see if your order was accepted" : "Error sending request\nCheck your network connection and try again"
                                     show = false
-                                    cart = [CartItem]()
+                                    cart = [String:Int]()
                                     DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
                                         pillOffset = -75
                                         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(6)) {
@@ -124,18 +121,18 @@ struct CartView: View {
 //}
 
 
-func sendEmail(cart: [CartItem], r: Binding<String>, c:Binding<Bool>) -> Bool {
+func sendEmail(cart: [String:Int], r: Binding<String>, c:Binding<Bool>) -> Bool {
     
     var itemNQ = [String]()
     var itemIDs = [String]()
     var itemQ = [String]()
     cart.forEach { (i) in
-        let id = i.item.id
-        let name = i.item.name
+        let id = i.key.split(separator: ",")[0]
+        let name = i.key.split(separator: ",")[1]
         
-        itemNQ.append("\(name) x\(i.quantity)")
+        itemNQ.append("\(name) x\(i.value)")
         itemIDs.append("\"\(id)\"")
-        itemQ.append(String(i.quantity))
+        itemQ.append(String(i.value))
     }
     
     let room = r.wrappedValue

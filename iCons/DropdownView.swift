@@ -10,7 +10,7 @@ import SwiftUI
 struct DropdownView: View {
 //    @ObservedObject private var viewModel = ItemsViewModel()
     @Binding var items: [Item]
-    @Binding var cart: [CartItem]
+    @Binding var cart: [String: Int]
     var heading: String = "Heading"
     var width: CGFloat = UIScreen.main.bounds.width-40
     var color: Color = Color.clear
@@ -180,12 +180,12 @@ func dumbNum(i:Int, count:Int) -> CGFloat {
 }
 
 
-//func infoViewsArray(items: [Item], cart: Binding<[String:Int]>) -> [AnyView] {
-//    var array = [AnyView]()
-//    items.forEach { (item) in
-//        array.append(
-//            itemInfo(cart: cart, item: Binding<Item>.constant(item)).anyview()
-//        )
-//    }
-//    return array
-//}
+func infoViewsArray(items: [Item], cart: Binding<[String:Int]>) -> [AnyView] {
+    var array = [AnyView]()
+    items.forEach { (item) in
+        array.append(
+            itemInfo(cart: cart, item: Binding<Item>.constant(item)).anyview()
+        )
+    }
+    return array
+}
