@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CartItem: View {
+struct CartItemView: View {
     @Binding var showCart: Bool
     var item: String
     @Binding var cart: [String: Int]

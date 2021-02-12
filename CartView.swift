@@ -26,7 +26,7 @@ struct CartView: View {
             List(viewModel.items.filter({ (item) -> Bool in
                 cart["\(item.id),\(item.name)"] != nil
             })){ item in
-                CartItem(showCart: $showCart, item: "\(item.id),\(item.name)", cart: $cart)
+                CartItemView(showCart: $showCart, item: "\(item.id),\(item.name)", cart: $cart)
             }
             Spacer()
             HStack {
@@ -36,9 +36,11 @@ struct CartView: View {
                         .padding()
                         .background(
                             Capsule()
-                                .fill(Color("green"))
+                                .fill(cart.isEmpty ? Color.gray : Color("green"))
                         )
-                }).sheet(isPresented: $confirming, content: {
+                })
+                .disabled(cart.isEmpty)
+                .sheet(isPresented: $confirming, content: {
                     ZStack {
                         Color("green")
                             .edgesIgnoringSafeArea(.all)
@@ -49,8 +51,9 @@ struct CartView: View {
                                 Button(action: {
                                     msg = sendEmail(cart:cart, r: $roomText, c: $showCart) ? "Order sent, check your email soon\nto see if your order was accepted" : "Error sending request\nCheck your network connection and try again"
                                     show = false
+                                    cart = [String:Int]()
                                     DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
-                                        pillOffset = -65
+                                        pillOffset = -75
                                         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(6)) {
                                             pillOffset = PILLGONE
                                             dragOffset = 0
@@ -94,7 +97,6 @@ struct CartView: View {
                     }
             })
                 .foregroundColor(.white)
-                .disabled(cart.isEmpty)
                 Spacer()
             }
             

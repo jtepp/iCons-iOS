@@ -105,10 +105,10 @@ struct itemInfo: View {
                             }
                             
                             Button(action:{
-                                cart[item.id+","+item.name] = quantity
                                 msg = "Cart now contains \(quantity)x \(item.name)"
+                                cart[item.id+","+item.name] = quantity
                                 DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(50)) {
-                                    pillOffset = -65
+                                    pillOffset = -75
                                     DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(6)) {
                                         pillOffset = PILLGONE
                                         dragOffset = 0
