@@ -26,7 +26,7 @@ struct CartView: View {
             List(viewModel.items.filter({ (item) -> Bool in
                 cart["\(item.id),\(item.name)"] != nil
             })){ item in
-                CartItemView(showCart: $showCart, item: item.name, cart: $cart)
+                CartItemView(showCart: $showCart, item: "\(item.id),\(item.name)", cart: $cart)
             }
             Spacer()
             HStack {
