@@ -10,7 +10,7 @@ import SwiftUI
 struct CartView: View {
     let PILLGONE:CGFloat = -300
     @Binding var showCart: Bool
-    @ObservedObject var cart: CartClass
+    @Binding var cart: [String: Int]
     @ObservedObject private var viewModel = ItemsViewModel()
     @State var confirming = false
     @State var roomText = ""
@@ -24,9 +24,9 @@ struct CartView: View {
                 .font(.largeTitle)
                 .bold()
             List(viewModel.items.filter({ (item) -> Bool in
-                cart.itemList["\(item.id),\(item.name)"] != nil
+                cart["\(item.id),\(item.name)"] != nil
             })){ item in
-                CartItemView(showCart: $showCart, item: "\(item.id),\(item.name)", cart: cart)
+                CartItemView(showCart: $showCart, item: "\(item.id),\(item.name)", cart: $cart)
             }
             Spacer()
             HStack {
@@ -36,10 +36,10 @@ struct CartView: View {
                         .padding()
                         .background(
                             Capsule()
-                                .fill(cart.itemList.isEmpty ? Color.gray : Color("green"))
+                                .fill(cart.isEmpty ? Color.gray : Color("green"))
                         )
                 })
-                .disabled(cart.itemList.isEmpty)
+                .disabled(cart.isEmpty)
                 .sheet(isPresented: $confirming, content: {
                     ZStack {
                         Color("green")
@@ -49,9 +49,9 @@ struct CartView: View {
                             HStack {
                                 Spacer()
                                 Button(action: {
-                                    msg = sendEmail(cart:cart.itemList, r: $roomText, c: $showCart) ? "Order sent, check your email soon\nto see if your order was accepted" : "Error sending request\nCheck your network connection and try again"
+                                    msg = sendEmail(cart:cart, r: $roomText, c: $showCart) ? "Order sent, check your email soon\nto see if your order was accepted" : "Error sending request\nCheck your network connection and try again"
                                     show = false
-                                    self.cart.itemList = [String:Int]()
+                                    cart = [String:Int]()
                                     DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
                                         pillOffset = -75
                                         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(6)) {

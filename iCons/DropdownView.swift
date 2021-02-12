@@ -10,7 +10,7 @@ import SwiftUI
 struct DropdownView: View {
 //    @ObservedObject private var viewModel = ItemsViewModel()
     @Binding var items: [Item]
-    @ObservedObject var cart: CartClass
+    @Binding var cart: [String: Int]
     var heading: String = "Heading"
     var width: CGFloat = UIScreen.main.bounds.width-40
     var color: Color = Color.clear
@@ -41,7 +41,7 @@ struct DropdownView: View {
                         VStack {
                             ForEach(items.indices, id: \.self){ i in
                                 NavigationLink(
-                                    destination: itemInfo(cart: cart, item: Binding<Item>.constant(items[i]))
+                                    destination: itemInfo(cart: $cart, item: Binding<Item>.constant(items[i]))
                                 ){
                                     HStack {
                                         VStack(alignment: .leading) {
@@ -180,12 +180,12 @@ func dumbNum(i:Int, count:Int) -> CGFloat {
 }
 
 
-//func infoViewsArray(items: [Item], cart: Binding<[String:Int]>) -> [AnyView] {
-//    var array = [AnyView]()
-//    items.forEach { (item) in
-//        array.append(
-//            itemInfo(cart: cart, item: Binding<Item>.constant(item)).anyview()
-//        )
-//    }
-//    return array
-//}
+func infoViewsArray(items: [Item], cart: Binding<[String:Int]>) -> [AnyView] {
+    var array = [AnyView]()
+    items.forEach { (item) in
+        array.append(
+            itemInfo(cart: cart, item: Binding<Item>.constant(item)).anyview()
+        )
+    }
+    return array
+}

@@ -10,7 +10,7 @@ import SwiftUI
 struct CartItemView: View {
     @Binding var showCart: Bool
     var item: String
-    @ObservedObject var cart: CartClass
+    @Binding var cart: [String: Int]
     @State var quantityText = "0"
     @State var exists = true
     var body: some View {
@@ -19,7 +19,7 @@ struct CartItemView: View {
                 .bold()
             Spacer()
             HStack{
-                Text(String(cart.itemList[item]!))
+                Text(String(cart[item]!))
                     .padding(5)
                     .background(
                         RoundedRectangle(cornerRadius: 5)
@@ -34,8 +34,8 @@ struct CartItemView: View {
                     .cornerRadius(10)
                     .onTapGesture {
                         exists = false
-                        cart.itemList.removeValue(forKey: item)
-                        if cart.itemList.isEmpty {
+                        cart.removeValue(forKey: item)
+                        if cart.isEmpty {
                             showCart = false
                         }
                     }
@@ -44,7 +44,7 @@ struct CartItemView: View {
             }}
         }
         .onAppear{
-            quantityText = String(cart.itemList[item] ?? 0)
+            quantityText = String(cart[item] ?? 0)
         }
     }
 }

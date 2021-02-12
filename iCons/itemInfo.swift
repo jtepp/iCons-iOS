@@ -53,7 +53,7 @@ let rooms = [
 
 struct itemInfo: View {
     let PILLGONE:CGFloat = -300
-    @ObservedObject var cart: CartClass
+    @Binding var cart: [String: Int]
     @State var msg = ""
     @State var pillOffset:CGFloat = -200
     @State var dragOffset:CGFloat = 0
@@ -106,7 +106,7 @@ struct itemInfo: View {
                             
                             Button(action:{
                                 msg = "Cart now contains \(quantity)x \(item.name)"
-                                cart.itemList[item.id+","+item.name] = quantity
+                                cart[item.id+","+item.name] = quantity
                                 DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(50)) {
                                     pillOffset = -75
                                     DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(6)) {
@@ -132,7 +132,7 @@ struct itemInfo: View {
                             })
                             .disabled(item.available <= 0 || quantity <= 0 || quantity > Int(item.available))
                             .sheet(isPresented: $showCart, content: {
-                                CartView(showCart: $showCart, cart: cart, pillOffset: $pillOffset, dragOffset: $dragOffset, msg: $msg, show: $showCart)
+                                CartView(showCart: $showCart, cart: $cart, pillOffset: $pillOffset, dragOffset: $dragOffset, msg: $msg, show: $showCart)
                                 
                             })
                         }
@@ -152,11 +152,11 @@ struct itemInfo: View {
                                 Button(action:{showCart = true}){
                                     Image(systemName:"cart")
                                         .overlay(
-                                            Text(String(cart.itemList.count))
+                                            Text(String(cart.count))
                                                 .font(.caption2)
-                                                .foregroundColor(cart.itemList.count > 0 ? .white : .clear)
+                                                .foregroundColor(cart.count > 0 ? .white : .clear)
                                                 .padding(4)
-                                                .background(Circle().fill(cart.itemList.count > 0 ? Color.red : Color.clear))
+                                                .background(Circle().fill(cart.count > 0 ? Color.red : Color.clear))
                                                 .offset(x: 10.0, y: -10)
                                         )
                                 }
@@ -166,13 +166,13 @@ struct itemInfo: View {
     }
 }
 
-//struct itemInfo_Preview: PreviewProvider {
-//    static var previews: some View {
-//        NavigationView{
-//            itemInfo(cart: Binding<[String: Int]>.constant([String: Int]()), item: Binding<Item>.constant(Item(id: "", name: "Name", category: "Category", available: 4)))
-//
-//        }
-//    }
-//}
-//
-//
+struct itemInfo_Preview: PreviewProvider {
+    static var previews: some View {
+        NavigationView{
+            itemInfo(cart: Binding<[String: Int]>.constant([String: Int]()), item: Binding<Item>.constant(Item(id: "", name: "Name", category: "Category", available: 4)))
+            
+        }
+    }
+}
+
+
