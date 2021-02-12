@@ -47,7 +47,7 @@ struct CartView: View {
                             HStack {
                                 Spacer()
                                 Button(action: {
-                                    msg = sendEmail(cart:viewModel.cart, r: $roomText, c: $showCart) ? "Order sent, check your email soon\nto see if your order was accepted" : "Error sending request\nCheck your network connection and try again"
+                                    msg = sendEmail(cart:$viewModel.cart, r: $roomText, c: $showCart) ? "Order sent, check your email soon\nto see if your order was accepted" : "Error sending request\nCheck your network connection and try again"
                                     show = false
                                     ItemsViewModel().clear(cartcount:$cartcount)
                                     DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
@@ -121,12 +121,12 @@ struct CartView: View {
 //}
 
 
-func sendEmail(cart: [CartItem], r: Binding<String>, c:Binding<Bool>) -> Bool {
+func sendEmail(cart: Binding<[CartItem]>, r: Binding<String>, c:Binding<Bool>) -> Bool {
     
     var itemNQ = [String]()
     var itemIDs = [String]()
     var itemQ = [String]()
-    cart.forEach { (i) in
+    cart.wrappedValue.forEach { (i) in
         let id = i.item.id
         let name = i.item.name
         
