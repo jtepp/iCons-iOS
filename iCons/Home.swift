@@ -18,13 +18,14 @@ struct Home: View {
     }
     
     let PILLGONE:CGFloat = 200
-    @State var cart = [String: Int]()
+    @State var cartcount = 0
     @State var pillOffset:CGFloat = 200
     @State var dragOffset:CGFloat = 0
     @State var signedOut = true
     @State var already = false
     @State var msg = ""
     @State var showCart = false
+    var db = Firestore.firestore()
     let categories = ["All", "Chargers", "Supplies", "Textbooks", "Cables", "Workbooks"]
     var body: some View {
         
@@ -34,7 +35,7 @@ struct Home: View {
                     
                     
                     ForEach(categories, id: \.self){category in
-                        CategoryLink(category: category, cart: $cart)
+                        CategoryLink(category: category)
                         Spacer()
                     }
                     
@@ -42,11 +43,11 @@ struct Home: View {
                     Button(action: {
                         do {
                             try Auth.auth().signOut()
+                            ItemsViewModel().clear()
                             UserDefaults.standard.setValue(nil, forKey: "displayName")
                             UserDefaults.standard.setValue(nil, forKey: "email")
                             signedOut = true
                             already = false
-                            cart = [String: Int]()
                         } catch {
                             print("sign out error")
                         }
@@ -84,17 +85,17 @@ struct Home: View {
                                                 Button(action:{showCart = true}){
                                                     Image(systemName:"cart")
                                                         .overlay(
-                                                            Text(String(cart.count))
+                                                            Text(String(cartcount))
                                                                 .font(.caption2)
-                                                                .foregroundColor(cart.count > 0 ? .white : .clear)
+                                                                .foregroundColor(cartcount > 0 ? .white : .clear)
                                                                 .padding(4)
-                                                                .background(Circle().fill(cart.count > 0 ? Color.red : Color.clear))
+                                                                .background(Circle().fill(cartcount > 0 ? Color.red : Color.clear))
                                                                 .offset(x: 10.0, y: -10)
                                                         )
                                                 }
                         )
                 .sheet(isPresented: $showCart, content: {
-                    CartView(showCart: $showCart, cart: $cart, pillOffset: $pillOffset, dragOffset: $dragOffset, msg: $msg, show: $showCart)
+                    CartView(showCart: $showCart, pillOffset: $pillOffset, dragOffset: $dragOffset, msg: $msg, show: $showCart)
                     
                 })
             }
@@ -121,6 +122,7 @@ struct Home: View {
                                         return
                                     }
                                     signedOut = false
+                                    
                                     UserDefaults.standard.setValue(authResult.user.displayName, forKey: "displayName")
                                     UserDefaults.standard.setValue(authResult.user.email, forKey: "email")
                                     print(UserDefaults.standard.string(forKey: "displayName")!)
@@ -163,6 +165,10 @@ struct Home: View {
                 
                         }
                     }
+                    db.collection("cart/\(UserDefaults.standard.string(forKey: "email") ?? "empty")/cartitems").getDocuments { (snapshot, error) in
+                        cartcount = snapshot!.documents.count
+                    }
+                    
                 }
             })
            
@@ -186,9 +192,8 @@ struct ContentView_Previews: PreviewProvider {
 
 struct CategoryLink: View {
     var category: String
-    @Binding var cart: [String: Int]
     var body: some View {
-        NavigationLink(destination: itemList(cart: $cart, category: category)){
+        NavigationLink(destination: itemList(category: category)){
             HStack {
                 Text(category)
                 Spacer()

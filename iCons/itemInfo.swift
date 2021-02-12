@@ -53,7 +53,7 @@ let rooms = [
 
 struct itemInfo: View {
     let PILLGONE:CGFloat = -300
-    @Binding var cart: [String: Int]
+    @State var cartcount = 0
     @State var msg = ""
     @State var pillOffset:CGFloat = -200
     @State var dragOffset:CGFloat = 0
@@ -61,6 +61,8 @@ struct itemInfo: View {
     @State var quantityText = "1"
     @Binding var item: Item
     @State var showCart = false
+    var db = Firestore.firestore()
+//    @State var current:Double = 0
     var body: some View {
         ZStack {
             HStack {
@@ -105,8 +107,8 @@ struct itemInfo: View {
                             }
                             
                             Button(action:{
-                                msg = "Cart now contains \(quantity)x \(item.name)"
-                                cart[item.id+","+item.name] = quantity
+                                msg = "Cart now contains \(item.name) x\(quantity)"
+                                ItemsViewModel().add(item: CartItem(item: item, quantity: quantity))
                                 DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(50)) {
                                     pillOffset = -75
                                     DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(6)) {
@@ -132,7 +134,7 @@ struct itemInfo: View {
                             })
                             .disabled(item.available <= 0 || quantity <= 0 || quantity > Int(item.available))
                             .sheet(isPresented: $showCart, content: {
-                                CartView(showCart: $showCart, cart: $cart, pillOffset: $pillOffset, dragOffset: $dragOffset, msg: $msg, show: $showCart)
+                                CartView(showCart: $showCart, pillOffset: $pillOffset, dragOffset: $dragOffset, msg: $msg, show: $showCart)
                                 
                             })
                         }
@@ -147,16 +149,28 @@ struct itemInfo: View {
             //                    showCart = true
             //                }
             
-        }.navigationBarItems(trailing:
+        }
+        .onAppear(){
+//            db.collection("cart/\(UserDefaults.standard.string(forKey: "email")!)/cartitems").document(item.id).addSnapshotListener({ (documentSnapshot, error) in
+//                       if documentSnapshot?.exists ?? false {
+//                           let d = documentSnapshot!.data()
+//                           current = d!["quantity"] as! Double
+//                       }
+//                   })
+            db.collection("cart/\(UserDefaults.standard.string(forKey: "email")!)/cartitems").getDocuments { (snapshot, error) in
+                cartcount = snapshot!.documents.count
+            }
+        }
+        .navigationBarItems(trailing:
                                 
                                 Button(action:{showCart = true}){
                                     Image(systemName:"cart")
                                         .overlay(
-                                            Text(String(cart.count))
+                                            Text(String(cartcount))
                                                 .font(.caption2)
-                                                .foregroundColor(cart.count > 0 ? .white : .clear)
+                                                .foregroundColor(cartcount > 0 ? .white : .clear)
                                                 .padding(4)
-                                                .background(Circle().fill(cart.count > 0 ? Color.red : Color.clear))
+                                                .background(Circle().fill(cartcount > 0 ? Color.red : Color.clear))
                                                 .offset(x: 10.0, y: -10)
                                         )
                                 }
@@ -169,7 +183,7 @@ struct itemInfo: View {
 struct itemInfo_Preview: PreviewProvider {
     static var previews: some View {
         NavigationView{
-            itemInfo(cart: Binding<[String: Int]>.constant([String: Int]()), item: Binding<Item>.constant(Item(id: "", name: "Name", category: "Category", available: 4)))
+            itemInfo(item: Binding<Item>.constant(Item(id: "", name: "Name", category: "Category", available: 4)))
             
         }
     }

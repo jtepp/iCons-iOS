@@ -10,7 +10,6 @@ import SwiftUI
 struct CartView: View {
     let PILLGONE:CGFloat = -300
     @Binding var showCart: Bool
-    @Binding var cart: [String: Int]
     @ObservedObject private var viewModel = ItemsViewModel()
     @State var confirming = false
     @State var roomText = ""
@@ -23,10 +22,8 @@ struct CartView: View {
             Text("Your Cart")
                 .font(.largeTitle)
                 .bold()
-            List(viewModel.items.filter({ (item) -> Bool in
-                cart["\(item.id),\(item.name)"] != nil
-            })){ item in
-                CartItemView(showCart: $showCart, item: "\(item.id),\(item.name)", cart: $cart)
+            List(viewModel.cart){ item in
+                CartItemView(showCart: $showCart, item: item)
             }
             Spacer()
             HStack {
@@ -36,10 +33,10 @@ struct CartView: View {
                         .padding()
                         .background(
                             Capsule()
-                                .fill(cart.isEmpty ? Color.gray : Color("green"))
+                                .fill(viewModel.cart.isEmpty ? Color.gray : Color("green"))
                         )
                 })
-                .disabled(cart.isEmpty)
+                .disabled(viewModel.cart.isEmpty)
                 .sheet(isPresented: $confirming, content: {
                     ZStack {
                         Color("green")
@@ -49,9 +46,9 @@ struct CartView: View {
                             HStack {
                                 Spacer()
                                 Button(action: {
-                                    msg = sendEmail(cart:cart, r: $roomText, c: $showCart) ? "Order sent, check your email soon\nto see if your order was accepted" : "Error sending request\nCheck your network connection and try again"
+                                    msg = sendEmail(cart:viewModel.cart, r: $roomText, c: $showCart) ? "Order sent, check your email soon\nto see if your order was accepted" : "Error sending request\nCheck your network connection and try again"
                                     show = false
-                                    cart = [String:Int]()
+                                    ItemsViewModel().clear()
                                     DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
                                         pillOffset = -75
                                         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(6)) {
@@ -78,6 +75,7 @@ struct CartView: View {
                                 .keyboardType(.numberPad)
                                 .padding(.vertical, 5)
                                 .padding(.horizontal, 10)
+                                .foregroundColor(.black)
                                 .background(
                                     Capsule()
                                         .fill(Color.white)
@@ -104,6 +102,7 @@ struct CartView: View {
         .padding()
         .onAppear{
             self.viewModel.fetchData()
+            self.viewModel.fetchCart()
         }
     }
 }
@@ -121,18 +120,18 @@ struct CartView: View {
 //}
 
 
-func sendEmail(cart: [String:Int], r: Binding<String>, c:Binding<Bool>) -> Bool {
+func sendEmail(cart: [CartItem], r: Binding<String>, c:Binding<Bool>) -> Bool {
     
     var itemNQ = [String]()
     var itemIDs = [String]()
     var itemQ = [String]()
     cart.forEach { (i) in
-        let id = i.key.split(separator: ",")[0]
-        let name = i.key.split(separator: ",")[1]
+        let id = i.item.id
+        let name = i.item.name
         
-        itemNQ.append("\(name) x\(i.value)")
+        itemNQ.append("\(name) x\(i.quantity)")
         itemIDs.append("\"\(id)\"")
-        itemQ.append(String(i.value))
+        itemQ.append(String(i.quantity))
     }
     
     let room = r.wrappedValue
