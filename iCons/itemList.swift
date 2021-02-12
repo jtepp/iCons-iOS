@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct itemList: View {
-    @Binding var cart: [String: Int]
+    @ObservedObject var cart: CartClass
     var category: String
     @ObservedObject private var viewModel = ItemsViewModel()
     @State var nextItems = [Item]()
@@ -28,7 +28,7 @@ struct itemList: View {
                         
                         DropdownView(
                             items: filtered(array: $nextItems, sub: s),
-                            cart: $cart, 
+                            cart: cart, 
                             heading: s,
                             color: Color("green"),
                             textColor: .white,
@@ -41,17 +41,17 @@ struct itemList: View {
                                             Button(action:{showCart = true}){
                                                 Image(systemName:"cart")
                                                     .overlay(
-                                                        Text(String(cart.count))
+                                                        Text(String(cart.itemList.count))
                                                             .font(.caption2)
-                                                            .foregroundColor(cart.count > 0 ? .white : .clear)
+                                                            .foregroundColor(cart.itemList.count > 0 ? .white : .clear)
                                                             .padding(4)
-                                                            .background(Circle().fill(cart.count > 0 ? Color.red : Color.clear))
+                                                            .background(Circle().fill(cart.itemList.count > 0 ? Color.red : Color.clear))
                                                             .offset(x: 10.0, y: -10)
                                                     )
                                             }
                     )
                     .sheet(isPresented: $showCart, content: {
-                        CartView(showCart: $showCart, cart: $cart, pillOffset: $pillOffset, dragOffset: $dragOffset, msg: $msg, show: $showCart)
+                        CartView(showCart: $showCart, cart: cart, pillOffset: $pillOffset, dragOffset: $dragOffset, msg: $msg, show: $showCart)
                         
                 })
                 }
@@ -65,13 +65,13 @@ struct itemList: View {
     
 }
 
-struct itemList_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationView {
-            itemList(cart: Binding<[String : Int]>.constant([String : Int]()), category: "All")
-        }
-    }
-}
+//struct itemList_Previews: PreviewProvider {
+//    static var previews: some View {
+//        NavigationView {
+//            itemList(cart: Binding<[String : Int]>.constant([String : Int]()), category: "All")
+//        }
+//    }
+//}
 
 
 func subList(items: [Item]) -> [String] {
