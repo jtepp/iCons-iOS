@@ -17,13 +17,14 @@ struct CartView: View {
     @Binding var dragOffset:CGFloat
     @Binding var msg: String
     @Binding var show: Bool
+    @Binding var cartcount: Int
     var body: some View {
         VStack(alignment: .leading) {
             Text("Your Cart")
                 .font(.largeTitle)
                 .bold()
             List(viewModel.cart){ item in
-                CartItemView(showCart: $showCart, item: item)
+                CartItemView(showCart: $showCart, item: item, cartcount: $cartcount)
             }
             Spacer()
             HStack {
@@ -48,7 +49,7 @@ struct CartView: View {
                                 Button(action: {
                                     msg = sendEmail(cart:viewModel.cart, r: $roomText, c: $showCart) ? "Order sent, check your email soon\nto see if your order was accepted" : "Error sending request\nCheck your network connection and try again"
                                     show = false
-                                    ItemsViewModel().clear()
+                                    ItemsViewModel().clear(cartcount:$cartcount)
                                     DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
                                         pillOffset = -75
                                         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(6)) {

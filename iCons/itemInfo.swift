@@ -117,6 +117,9 @@ struct itemInfo: View {
                                     }
                                     
                                 }
+                                db.collection("cart/\(UserDefaults.standard.string(forKey: "email") ?? "empty")/cartitems").getDocuments { (snapshot, error) in
+                                    cartcount = snapshot!.documents.count
+                                }
                             }, label: {
                                 HStack {
                                     Image(systemName: "cart.badge.plus")
@@ -134,7 +137,7 @@ struct itemInfo: View {
                             })
                             .disabled(item.available <= 0 || quantity <= 0 || quantity > Int(item.available))
                             .sheet(isPresented: $showCart, content: {
-                                CartView(showCart: $showCart, pillOffset: $pillOffset, dragOffset: $dragOffset, msg: $msg, show: $showCart)
+                                CartView(showCart: $showCart, pillOffset: $pillOffset, dragOffset: $dragOffset, msg: $msg, show: $showCart, cartcount: $cartcount)
                                 
                             })
                         }

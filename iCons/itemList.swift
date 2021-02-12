@@ -55,7 +55,7 @@ struct itemList: View {
                         nextItems = [Item]()
                         self.viewModel.fetchInOut(array: $nextItems)
                     }, content: {
-                        CartView(showCart: $showCart, pillOffset: $pillOffset, dragOffset: $dragOffset, msg: $msg, show: $showCart)
+                        CartView(showCart: $showCart, pillOffset: $pillOffset, dragOffset: $dragOffset, msg: $msg, show: $showCart, cartcount:$cartcount)
                         
                     })
                 }

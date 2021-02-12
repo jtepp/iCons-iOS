@@ -98,12 +98,13 @@ class ItemsViewModel: ObservableObject {
     func increment(item: CartItem){
         db.collection("cart/\(UserDefaults.standard.string(forKey: "email")!)/cartitems").document(item.item.id).updateData(["quantity":FieldValue.increment(Int64(item.quantity))])
     }
-    func clear() {
+    func clear(cartcount: Binding<Int>) {
         db.collection("cart/\(UserDefaults.standard.string(forKey: "email")!)/cartitems").getDocuments { (querySnapshot, error) in
             querySnapshot?.documents.forEach({ (doc) in
                 doc.reference.delete()
             })
         }
         db.collection("cart").document(UserDefaults.standard.string(forKey: "email")!).delete()
+        cartcount.wrappedValue = 0
     }
 }

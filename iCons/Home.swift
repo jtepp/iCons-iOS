@@ -43,7 +43,7 @@ struct Home: View {
                     Button(action: {
                         do {
                             try Auth.auth().signOut()
-                            ItemsViewModel().clear()
+                            ItemsViewModel().clear(cartcount: $cartcount)
                             UserDefaults.standard.setValue(nil, forKey: "displayName")
                             UserDefaults.standard.setValue(nil, forKey: "email")
                             signedOut = true
@@ -95,7 +95,7 @@ struct Home: View {
                                                 }
                         )
                 .sheet(isPresented: $showCart, content: {
-                    CartView(showCart: $showCart, pillOffset: $pillOffset, dragOffset: $dragOffset, msg: $msg, show: $showCart)
+                    CartView(showCart: $showCart, pillOffset: $pillOffset, dragOffset: $dragOffset, msg: $msg, show: $showCart, cartcount: Binding<Int>.constant(0))
                     
                 })
             }
