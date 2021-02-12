@@ -29,7 +29,7 @@ struct CartView: View {
                     i.item.name == it.name
                 }
             })){ item in
-                CartItemView(showCart: $showCart, item: item.name, cart: $cart)
+                CartItemView(showCart: $showCart, item: "\(item.id),\(item.name)", cart: $cart)
             }
             Spacer()
             HStack {
