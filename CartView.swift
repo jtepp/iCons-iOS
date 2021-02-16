@@ -49,6 +49,8 @@ struct CartView: View {
                                 Button(action: {
                                     msg = sendEmail(cart:$viewModel.cart, r: $roomText, c: $showCart) ? "Order sent, check your email soon\nto see if your order was accepted" : "Error sending request\nCheck your network connection and try again"
                                     show = false
+                                    confirming = false
+                                    showCart = false
                                     ItemsViewModel().clear(cartcount:$cartcount)
                                     DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
                                         pillOffset = -75
@@ -155,9 +157,9 @@ func sendEmail(cart: Binding<[CartItem]>, r: Binding<String>, c:Binding<Bool>) -
     }
     
     do {
+        c.wrappedValue = false
         let response = try String(contentsOf: url)
         if response == "success" {
-            c.wrappedValue = false
             return true
         }
         return false
