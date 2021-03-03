@@ -101,55 +101,72 @@ struct Home: View {
             }
             .sheet(isPresented: $signedOut, content: {
                 ModalView(title: "Welcome") {
-                    Button(action: {
-                        self.microsoftProvider?.getCredentialWith(_: nil){credential, error in
-                
-                            if error != nil {
-                                // Handle error.
-                            }
-                
-                            if let credential = credential {
-                
-                
-                                Auth.auth().signIn(with: credential) { (authResult, error) in
-                
-                                    if error != nil {
-                                        // Handle error.
-                                    }
-                
-                                    guard let authResult = authResult else {
-                                        print("Couldn't get graph authResult")
-                                        return
-                                    }
-                                    signedOut = false
-                                    
-                                    UserDefaults.standard.setValue(authResult.user.displayName, forKey: "displayName")
-                                    UserDefaults.standard.setValue(authResult.user.email, forKey: "email")
-                                    print(UserDefaults.standard.string(forKey: "displayName")!)
-                                    print(UserDefaults.standard.string(forKey: "email")!)
-                                    already = true
-                                    msg = "Welcome,\n\((UserDefaults.standard.string(forKey: "displayName") ?? "")!)"
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
-                                        pillOffset = 0
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(4)) {
-                                            pillOffset = PILLGONE
-                                            dragOffset = 0
+                    ZStack{
+                        Image("ILC")
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .opacity(0.3)
+                            .edgesIgnoringSafeArea(.all)
+                            
+                        VStack {
+                            Image("hours")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(maxWidth: UIScreen.main.bounds.width-100)
+                                
+                            Button(action: {
+                            self.microsoftProvider?.getCredentialWith(_: nil){credential, error in
+                    
+                                if error != nil {
+                                    // Handle error.
+                                }
+                    
+                                if let credential = credential {
+                    
+                    
+                                    Auth.auth().signIn(with: credential) { (authResult, error) in
+                    
+                                        if error != nil {
+                                            // Handle error.
                                         }
-                
+                    
+                                        guard let authResult = authResult else {
+                                            print("Couldn't get graph authResult")
+                                            return
+                                        }
+                                        signedOut = false
+                                        
+                                        UserDefaults.standard.setValue(authResult.user.displayName, forKey: "displayName")
+                                        UserDefaults.standard.setValue(authResult.user.email, forKey: "email")
+                                        print(UserDefaults.standard.string(forKey: "displayName")!)
+                                        print(UserDefaults.standard.string(forKey: "email")!)
+                                        already = true
+                                        msg = "Welcome,\n\((UserDefaults.standard.string(forKey: "displayName") ?? "")!)"
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
+                                            pillOffset = 0
+                                            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(4)) {
+                                                pillOffset = PILLGONE
+                                                dragOffset = 0
+                                            }
+                    
+                                        }
                                     }
                                 }
                             }
+                        }) {
+                            Text("SIGN IN WITH NETID")
+                                .font(.title)
+                                .bold()
+                                .foregroundColor(.white)
+                                .padding()
+                                .background(
+                                    RoundedRectangle(cornerRadius: 20)
+                                        .fill(Color("red"))
+                                )
+                            }
                         }
-                    }) {
-                        Text("Sign In")
-                            .foregroundColor(.white)
-                            .padding()
-                            .background(
-                                Capsule()
-                                    .fill(Color("green"))
-                            )
-                    }
                 
+                }
                 }
                 .onAppear(){
                     if (UserDefaults.standard.string(forKey: "displayName") != nil && UserDefaults.standard.string(forKey: "email") != nil) {
