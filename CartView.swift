@@ -26,6 +26,7 @@ struct CartView: View {
         VStack(alignment: .leading) {
             Text("Your Cart")
                 .font(.largeTitle)
+                .foregroundColor(.black)
                 .bold()
             ScrollView {
                 ForEach(viewModel.cart){ item in
@@ -40,6 +41,7 @@ struct CartView: View {
                 Spacer()
                 Button(action: {confirming = true}, label: {
                     HomeButton(text: "SEND ORDER")
+                        .colorMultiply(cartcount > 0 ? Color.white : Color.gray)
                 })
                 .disabled(viewModel.cart.isEmpty)
                 .sheet(isPresented: $confirming, content: {
