@@ -22,6 +22,7 @@ struct SignIn: View {
     var body: some View {
         ModalView(title: "Welcome") {
             ZStack{
+                Color.white
                 Image("ILC")
                     .resizable()
                     .aspectRatio(contentMode: .fill)
