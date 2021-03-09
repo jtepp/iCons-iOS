@@ -90,6 +90,7 @@ struct itemInfo: View {
                         VStack {
                             HStack {
                                 Text("Quantity to order:")
+                                    .bold()
                                 TextField("", text: $quantityText)
                                     .onChange(of: quantityText, perform: { _ in
                                         if (Int(quantityText) ?? 0) < 0 {
