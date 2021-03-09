@@ -30,15 +30,6 @@ struct CategoryPicking: View {
         
         ZStack {
             VStack {
-                HStack {
-                    Text("Categories")
-                    .font(.largeTitle)
-                    .bold()
-                        .padding(.horizontal, 40)
-                    Spacer()
-                }
-                .offset(y: -40)
-                
                 ForEach(0..<Int(categories.count/2), id: \.self){category in
                     HStack {
                         CategoryLink(category: categories[category * 2])
@@ -65,8 +56,9 @@ struct CategoryPicking: View {
                             )
                     })
                 Spacer()
-                
             }
+            .offset(y: 40)
+            .navigationTitle("Categories")
             .onAppear{
                 if !signedOut && !already {
                     already = true
@@ -137,7 +129,7 @@ struct CategoryLink: View {
                 .background(
                     //            RoundedRectangle(cornerRadius: 20)
                     //                .fill(Color("green"))
-                    Image("redbutton")
+                    Image("redfolder")
                         .resizable()
                         //                            .aspectRatio(contentMode: .fit)
                         .frame(width: 130, height: 110)

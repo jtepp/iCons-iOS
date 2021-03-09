@@ -7,7 +7,6 @@
 
 import SwiftUI
 import Firebase
-import UIKit
 
 struct Home: View {
     
@@ -49,14 +48,17 @@ struct Home: View {
                         HomeButton(text: "REQUEST ITEMS")
                     })
                 
-                NavigationLink(
-                    destination: Text("meet the icons"),
+                Button(
+                    action: {
+                        UIApplication.shared.open(URL(string: "https://icon.engsoc.queensu.ca/hestia-front/team/")!)
+                        
+                    },
                     label: {
                         HomeButton(text: "MEET THE ICONS")
                     })
                 
                 NavigationLink(
-                    destination: Text("hours of operation"),
+                    destination: Hours(),
                     label: {
                         HomeButton(text: "HOURS OF OPERATION")
                     })

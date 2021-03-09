@@ -62,7 +62,7 @@ struct itemInfo: View {
     @Binding var item: Item
     @State var showCart = false
     var db = Firestore.firestore()
-//    @State var current:Double = 0
+    //    @State var current:Double = 0
     var body: some View {
         ZStack {
             HStack {
@@ -73,7 +73,7 @@ struct itemInfo: View {
                                 .font(.largeTitle)
                                 .bold()
                                 .padding(.top,-20)
-                            Text(item.category)
+                            Text(item.category+" - "+item.sub)
                                 .padding(.bottom,100)
                             Text(String(Int(item.available))+" remaining")
                                 .font(.title)
@@ -131,8 +131,11 @@ struct itemInfo: View {
                                 .foregroundColor(.white)
                                 .padding()
                                 .background(
-                                    RoundedRectangle(cornerRadius: 50)
-                                        .fill((item.available <= 0 || quantity <= 0 || quantity > Int(item.available)) ? Color.gray : Color("green"))
+                                    Image("greenbutton")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(height: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                                        .colorMultiply((item.available <= 0 || quantity <= 0 || quantity > Int(item.available)) ? Color.gray : Color.white)
                                 )
                             })
                             .disabled(item.available <= 0 || quantity <= 0 || quantity > Int(item.available))
@@ -146,6 +149,11 @@ struct itemInfo: View {
                     .padding()
                 }
             }
+            .background(
+                LinearGradient(gradient: Gradient(colors: [Color.white, Color("green")]), startPoint: .top, endPoint: .bottom)
+                    .opacity(0.5)
+                    .edgesIgnoringSafeArea(.all)
+            )
             PillView(PILLGONE: PILLGONE, text: $msg, pillOffset: $pillOffset, dragOffset: $dragOffset, top: true)
             //                .onTapGesture {
             //                    pillOffset = PILLGONE
@@ -154,12 +162,12 @@ struct itemInfo: View {
             
         }
         .onAppear(){
-//            db.collection("cart/\(UserDefaults.standard.string(forKey: "email")!)/cartitems").document(item.id).addSnapshotListener({ (documentSnapshot, error) in
-//                       if documentSnapshot?.exists ?? false {
-//                           let d = documentSnapshot!.data()
-//                           current = d!["quantity"] as! Double
-//                       }
-//                   })
+            //            db.collection("cart/\(UserDefaults.standard.string(forKey: "email")!)/cartitems").document(item.id).addSnapshotListener({ (documentSnapshot, error) in
+            //                       if documentSnapshot?.exists ?? false {
+            //                           let d = documentSnapshot!.data()
+            //                           current = d!["quantity"] as! Double
+            //                       }
+            //                   })
             db.collection("cart/\(UserDefaults.standard.string(forKey: "email")!)/cartitems").getDocuments { (snapshot, error) in
                 cartcount = snapshot!.documents.count
             }
