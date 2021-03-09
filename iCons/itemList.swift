@@ -26,12 +26,16 @@ struct itemList: View {
                 ScrollView {
                     ForEach(subList(items: Binding<[Item]>.constant(self.viewModel.items.filter({ (item) -> Bool in
                         item.category.lowercased() == category.lowercased() || category.lowercased() == "all"
-                    }))), id: \.self){ s in
+                    }))).sorted(by: { (a, b) -> Bool in
+                        a < b
+                    })
+                    
+                    , id: \.self){ s in
                         
                         DropdownView(
                             items: filtered(array: $nextItems, sub: s),
-                            heading: s,
-                            color: Color("green"),
+                            heading: (category.lowercased() == "all") ? (s + " - " + casing(s: filtered(array: $nextItems, sub: s)[0].category.wrappedValue) ): s,
+                            color: Color("blue"),
                             textColor: .white,
                             secondTextColor: .white
                         )
@@ -61,6 +65,13 @@ struct itemList: View {
                 }
                 PillView(text: $msg, pillOffset: $pillOffset, dragOffset: $dragOffset)
             }
+            .background(
+                            LinearGradient(gradient: Gradient(colors: [Color.white, Color("blue")]), startPoint: .top, endPoint: .bottom)
+                                .opacity(0.5)
+                                .edgesIgnoringSafeArea(.all)
+                                .padding(.horizontal, -100)
+                                .padding(.top, 100)
+                        )
             .onAppear{
                 self.viewModel.fetchInOut(array: $nextItems)
                 db.collection("cart/\(UserDefaults.standard.string(forKey: "email")!)/cartitems").getDocuments { (snapshot, error) in
@@ -97,4 +108,8 @@ func filtered(array: Binding<[Item]>, sub: String) -> Binding<[Item]> {
     }
     return Binding<[Item]>.constant(a)
     
+}
+
+func casing(s: String) -> String{
+    return s.prefix(1).uppercased()+s.suffix(s.count-1).lowercased()
 }

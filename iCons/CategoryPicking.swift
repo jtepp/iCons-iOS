@@ -25,82 +25,79 @@ struct CategoryPicking: View {
     @State var msg = ""
     @State var showCart = false
     var db = Firestore.firestore()
-    let categories = ["All", "Chargers", "Supplies", "Textbooks", "Cables", "Workbooks"]
+    let categories = ["Textbooks", "Chargers", "Cables", "Supplies", "Booklets", "Workbooks"]
     var body: some View {
         
         ZStack {
-            NavigationView{
-                VStack {
-                    
-                    
-                    ForEach(categories, id: \.self){category in
-                        CategoryLink(category: category)
-                        Spacer()
-                    }
-                    
-                    
-                    Button(action: {
-                        do {
-                            try Auth.auth().signOut()
-                            ItemsViewModel().clear(cartcount: $cartcount)
-                            UserDefaults.standard.setValue(nil, forKey: "displayName")
-                            UserDefaults.standard.setValue(nil, forKey: "email")
-                            signedOut = true
-                            already = false
-                        } catch {
-                            print("sign out error")
-                        }
-                        
-                    }, label: {
-                        HStack {
-                            Text("Sign Out")
-                                .frame(width: 80)
-                                .foregroundColor(.white)
-                                .padding()
-                                .background(
-                                    Capsule()
-                                        .fill(Color("red"))
-                                )
-                        }
-                    })
-                    .padding(.bottom, 20)
+            VStack {
+                HStack {
+                    Text("Categories")
+                    .font(.largeTitle)
+                    .bold()
+                        .padding(.horizontal, 40)
                     Spacer()
-                    
                 }
-                .onAppear{
-                    if !signedOut && !already {
-                        already = true
-                        msg = "Welcome,\n\((UserDefaults.standard.string(forKey: "displayName") ?? "")!)"
-                        pillOffset = 0
-                        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(4)) {
-                            pillOffset = PILLGONE
-                            dragOffset = 0
-                        }
-                        
+                .offset(y: -40)
+                
+                ForEach(0..<Int(categories.count/2), id: \.self){category in
+                    HStack {
+                        CategoryLink(category: categories[category * 2])
+                        Spacer()
+                        CategoryLink(category: categories[category * 2 + 1])
                     }
+                    .padding(.horizontal, 40)
+                    .padding(.bottom)
                 }
-                .navigationBarItems(trailing:
-                                                
-                                                Button(action:{showCart = true}){
-                                                    Image(systemName:"cart")
-                                                        .overlay(
-                                                            Text(String(cartcount))
-                                                                .font(.caption2)
-                                                                .foregroundColor(cartcount > 0 ? .white : .clear)
-                                                                .padding(4)
-                                                                .background(Circle().fill(cartcount > 0 ? Color.red : Color.clear))
-                                                                .offset(x: 10.0, y: -10)
-                                                        )
-                                                }
-                        )
-                .sheet(isPresented: $showCart, content: {
-                    CartView(showCart: $showCart, pillOffset: $pillOffset, dragOffset: $dragOffset, msg: $msg, show: $showCart, cartcount: Binding<Int>.constant(0))
-                    
-                })
+                
+             
+                NavigationLink(
+                    destination: itemList(category: "All"),
+                    label: {
+                        Text("SEE ALL\nINVENTORY")
+                            .font(.system(size: 20, weight: .bold))
+                            .foregroundColor(.white)
+                            .multilineTextAlignment(.center)
+                            .background(
+                                RoundedRectangle(cornerRadius: 20)
+                                    .fill(Color("red"))
+                                    .padding(.vertical, -14)
+                                    .padding(.horizontal, -60)
+                            )
+                    })
+                Spacer()
+                
             }
-            .sheet(isPresented: $signedOut, content: {
-                    SignIn(cartcount: $cartcount, signedOut: $signedOut, microsoftProvider: self.microsoftProvider, already: $already, msg: $msg, pillOffset: $pillOffset, dragOffset: $dragOffset)}
+            .onAppear{
+                if !signedOut && !already {
+                    already = true
+                    msg = "Welcome,\n\((UserDefaults.standard.string(forKey: "displayName") ?? "")!)"
+                    pillOffset = 0
+                    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(4)) {
+                        pillOffset = PILLGONE
+                        dragOffset = 0
+                    }
+                    
+                }
+            }
+            .navigationBarItems(trailing:
+                                    
+                                    Button(action:{showCart = true}){
+                                        Image(systemName:"cart")
+                                            .overlay(
+                                                Text(String(cartcount))
+                                                    .font(.caption2)
+                                                    .foregroundColor(cartcount > 0 ? .white : .clear)
+                                                    .padding(4)
+                                                    .background(Circle().fill(cartcount > 0 ? Color.red : Color.clear))
+                                                    .offset(x: 10.0, y: -10)
+                                            )
+                                    }
             )
+            .sheet(isPresented: $showCart, content: {
+                CartView(showCart: $showCart, pillOffset: $pillOffset, dragOffset: $dragOffset, msg: $msg, show: $showCart, cartcount: Binding<Int>.constant(0))
+                
+            })
+            
             
             PillView(text: $msg, pillOffset: $pillOffset, dragOffset: $dragOffset)
                 .onTapGesture {
@@ -108,13 +105,49 @@ struct CategoryPicking: View {
                 }
             
         }
-        
+        .background(
+            LinearGradient(gradient: Gradient(colors: [Color.white, Color("red")]), startPoint: .top, endPoint: .bottom)
+                .opacity(0.5)
+                .edgesIgnoringSafeArea(.all)
+                .padding(.horizontal, -100)
+                .padding(.top, 100)
+        )
     }
 }
 
 
 struct CGPreviews: PreviewProvider {
     static var previews: some View {
-        Home()
+        NavigationView {
+            CategoryPicking()
+        }
+    }
+}
+
+
+struct CategoryLink: View {
+    var category: String
+    var body: some View {
+        NavigationLink(destination: itemList(category: category)){
+            Text(category.uppercased())
+                .font(.system(size: 20, weight: .bold))
+                .foregroundColor(.white)
+                .padding()
+                .shadow(radius: 10)
+                .background(
+                    //            RoundedRectangle(cornerRadius: 20)
+                    //                .fill(Color("green"))
+                    Image("redbutton")
+                        .resizable()
+                        //                            .aspectRatio(contentMode: .fit)
+                        .frame(width: 130, height: 110)
+                )
+                .frame(width: 130, height: 110)
+                .lineLimit(1)
+                .minimumScaleFactor(0.1)
+                .padding(.bottom)
+        }
+        
+        
     }
 }

@@ -26,88 +26,104 @@ struct Home: View {
     @State var msg = ""
     @State var showCart = false
     var db = Firestore.firestore()
-    let categories = ["All", "Chargers", "Supplies", "Textbooks", "Cables", "Workbooks"]
     var body: some View {
-        
-        ZStack {
-            NavigationView{
-                VStack {
-                    
-                    
-                    ForEach(categories, id: \.self){category in
-                        CategoryLink(category: category)
-                        Spacer()
-                    }
-                    
-                    
-                    Button(action: {
-                        do {
-                            try Auth.auth().signOut()
-                            ItemsViewModel().clear(cartcount: $cartcount)
-                            UserDefaults.standard.setValue(nil, forKey: "displayName")
-                            UserDefaults.standard.setValue(nil, forKey: "email")
-                            signedOut = true
-                            already = false
-                        } catch {
-                            print("sign out error")
-                        }
-                        
-                    }, label: {
-                        HStack {
-                            Text("Sign Out")
-                                .frame(width: 80)
-                                .foregroundColor(.white)
-                                .padding()
-                                .background(
-                                    Capsule()
-                                        .fill(Color("red"))
-                                )
-                        }
+        ZStack { NavigationView {
+            VStack {
+                
+                Text("How can we help you?")
+                    .font(.title)
+                    .bold()
+                    .padding(.bottom)
+                    .offset(y: -20)
+                //                    RoundedRectangle(cornerRadius: 10)
+                //                        .frame(width: UIScreen.main.bounds.width-40, height: 2)
+                //                        .padding(.top, -5)
+                
+                NavigationLink(
+                    destination: CategoryPicking(),
+                    label: {
+                        HomeButton(text: "REQUEST ITEMS")
                     })
-                    .padding(.bottom, 20)
-                    Spacer()
-                    
-                }
-                .onAppear{
-                    if !signedOut && !already {
-                        already = true
-                        msg = "Welcome,\n\((UserDefaults.standard.string(forKey: "displayName") ?? "")!)"
-                        pillOffset = 0
-                        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(4)) {
-                            pillOffset = PILLGONE
-                            dragOffset = 0
-                        }
-                        
+                
+                NavigationLink(
+                    destination: Text("meet the icons"),
+                    label: {
+                        HomeButton(text: "MEET THE ICONS")
+                    })
+                
+                NavigationLink(
+                    destination: Text("hours of operation"),
+                    label: {
+                        HomeButton(text: "HOURS OF OPERATION")
+                    })
+                
+                Button(action: {
+                    do {
+                        try Auth.auth().signOut()
+                        ItemsViewModel().clear(cartcount: $cartcount)
+                        UserDefaults.standard.setValue(nil, forKey: "displayName")
+                        UserDefaults.standard.setValue(nil, forKey: "email")
+                        signedOut = true
+                        already = false
+                    } catch {
+                        print("sign out error")
                     }
-                }
-                .navigationBarItems(trailing:
-                                                
-                                                Button(action:{showCart = true}){
-                                                    Image(systemName:"cart")
-                                                        .overlay(
-                                                            Text(String(cartcount))
-                                                                .font(.caption2)
-                                                                .foregroundColor(cartcount > 0 ? .white : .clear)
-                                                                .padding(4)
-                                                                .background(Circle().fill(cartcount > 0 ? Color.red : Color.clear))
-                                                                .offset(x: 10.0, y: -10)
-                                                        )
-                                                }
-                        )
-                .sheet(isPresented: $showCart, content: {
-                    CartView(showCart: $showCart, pillOffset: $pillOffset, dragOffset: $dragOffset, msg: $msg, show: $showCart, cartcount: Binding<Int>.constant(0))
                     
+                }, label: {
+                    HomeButton(text: "SIGN OUT")
                 })
+                .padding(.bottom, 20)
+                Spacer()
+                
             }
-            .sheet(isPresented: $signedOut, content: {
-                    SignIn(cartcount: $cartcount, signedOut: $signedOut, microsoftProvider: self.microsoftProvider, already: $already, msg: $msg, pillOffset: $pillOffset, dragOffset: $dragOffset)}
+            .background(
+                LinearGradient(gradient: Gradient(colors: [Color.white, Color("green")]), startPoint: .top, endPoint: .bottom)
+                    .opacity(0.5)
+                    .edgesIgnoringSafeArea(.all)
+                    .padding(.horizontal, -100)
+                    .padding(.top, 100)
             )
-            
-            PillView(text: $msg, pillOffset: $pillOffset, dragOffset: $dragOffset)
-                .onTapGesture {
-                    pillOffset = PILLGONE
+            .onAppear{
+                if !signedOut && !already {
+                    already = true
+                    msg = "Welcome,\n\((UserDefaults.standard.string(forKey: "displayName") ?? "")!)"
+                    pillOffset = 0
+                    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(4)) {
+                        pillOffset = PILLGONE
+                        dragOffset = 0
+                    }
+                    
                 }
-            
+            }
+            .navigationBarItems(trailing:
+                                    
+                                    Button(action:{showCart = true}){
+                                        Image(systemName:"cart")
+                                            .overlay(
+                                                Text(String(cartcount))
+                                                    .font(.caption2)
+                                                    .foregroundColor(cartcount > 0 ? .white : .clear)
+                                                    .padding(4)
+                                                    .background(Circle().fill(cartcount > 0 ? Color.red : Color.clear))
+                                                    .offset(x: 10.0, y: -10)
+                                            )
+                                    }
+            )
+            .sheet(isPresented: $showCart, content: {
+                CartView(showCart: $showCart, pillOffset: $pillOffset, dragOffset: $dragOffset, msg: $msg, show: $showCart, cartcount: Binding<Int>.constant(0))
+                
+            })
+        }
+        
+        .sheet(isPresented: $signedOut, content: {
+                SignIn(cartcount: $cartcount, signedOut: $signedOut, microsoftProvider: self.microsoftProvider, already: $already, msg: $msg, pillOffset: $pillOffset, dragOffset: $dragOffset)}
+        )
+        
+        PillView(text: $msg, pillOffset: $pillOffset, dragOffset: $dragOffset)
+            .onTapGesture {
+                pillOffset = PILLGONE
+            }
+        
         }
         
     }
@@ -120,23 +136,27 @@ struct ContentView_Previews: PreviewProvider {
     }
 }
 
-struct CategoryLink: View {
-    var category: String
+struct HomeButton: View {
+    var text: String
     var body: some View {
-        NavigationLink(destination: itemList(category: category)){
-            HStack {
-                Text(category)
-                Spacer()
-                Image(systemName: "chevron.right")
-            }
-        }
-        .frame(width: 150)
-        .foregroundColor(.white)
-        .padding()
-        .background(
-            RoundedRectangle(cornerRadius: 20)
-                .fill(Color("green"))
-        )
+        Text(text)
+            .font(.title)
+            .bold()
+            .foregroundColor(.white)
+            .padding()
+            .shadow(radius: 10)
+            .background(
+                //            RoundedRectangle(cornerRadius: 20)
+                //                .fill(Color("green"))
+                Image("greenbutton")
+                    .resizable()
+                    //                            .aspectRatio(contentMode: .fit)
+                    .frame(width: UIScreen.main.bounds.width-120, height: 100)
+            )
+            .frame(width: UIScreen.main.bounds.width-120, height: 100)
+            .lineLimit(1)
+            .minimumScaleFactor(0.1)
+            .padding(.bottom)
         
     }
 }
