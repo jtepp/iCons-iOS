@@ -84,11 +84,14 @@ struct Home: View {
                 
             }
             .background(
-                LinearGradient(gradient: Gradient(colors: [Color.white, Color("green")]), startPoint: .top, endPoint: .bottom)
-                    .opacity(0.5)
-                    .edgesIgnoringSafeArea(.all)
-                    .padding(.horizontal, -100)
-                    .padding(.top, 100)
+                ZStack {
+                    Color.white
+                    LinearGradient(gradient: Gradient(colors: [Color.white, Color("green")]), startPoint: .top, endPoint: .bottom)
+                        .opacity(0.5)
+                        .edgesIgnoringSafeArea(.all)
+                        .padding(.horizontal, -100)
+                        .padding(.top, 100)
+                }
             )
             .onAppear{
                 if UserDefaults.standard.string(forKey: "email") ?? nil != nil {

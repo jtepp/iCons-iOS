@@ -10,6 +10,7 @@ import SwiftUI
 struct Hours: View {
     var body: some View {
         ZStack {
+            Color.white
             LinearGradient(gradient: Gradient(colors: [Color.white, Color("red")]), startPoint: .top, endPoint: .bottom)
                 .opacity(0.5)
                 .edgesIgnoringSafeArea(.all)

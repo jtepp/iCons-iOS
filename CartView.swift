@@ -44,6 +44,7 @@ struct CartView: View {
                 .disabled(viewModel.cart.isEmpty)
                 .sheet(isPresented: $confirming, content: {
                     ZStack{
+                            Color.white
                             LinearGradient(gradient: Gradient(colors: [Color.white, Color("green")]), startPoint: .top, endPoint: .bottom)
                                 .opacity(0.5)
                                 .edgesIgnoringSafeArea(.all)
@@ -104,11 +105,14 @@ struct CartView: View {
         }
         .padding()
         .background(
+            ZStack {
+                Color.white
             LinearGradient(gradient: Gradient(colors: [Color.white, Color("green")]), startPoint: .top, endPoint: .bottom)
                 .opacity(0.5)
                 .edgesIgnoringSafeArea(.all)
                 .padding(.horizontal, -100)
                 .padding(.top, 100)
+            }
         )
         .onAppear{
             self.viewModel.fetchData()

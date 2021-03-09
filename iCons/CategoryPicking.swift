@@ -99,11 +99,14 @@ struct CategoryPicking: View {
             
         }
         .background(
+            ZStack {
+                Color.white
             LinearGradient(gradient: Gradient(colors: [Color.white, Color("red")]), startPoint: .top, endPoint: .bottom)
                 .opacity(0.5)
                 .edgesIgnoringSafeArea(.all)
                 .padding(.horizontal, -100)
                 .padding(.top, 100)
+            }
         )
     }
 }

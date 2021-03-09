@@ -151,9 +151,12 @@ struct itemInfo: View {
                 }
             }
             .background(
+                ZStack {
+                    Color.white
                 LinearGradient(gradient: Gradient(colors: [Color.white, Color("green")]), startPoint: .top, endPoint: .bottom)
                     .opacity(0.5)
                     .edgesIgnoringSafeArea(.all)
+                }
             )
             PillView(PILLGONE: PILLGONE, text: $msg, pillOffset: $pillOffset, dragOffset: $dragOffset, top: true)
             //                .onTapGesture {

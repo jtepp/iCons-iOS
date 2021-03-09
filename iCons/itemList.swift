@@ -66,11 +66,14 @@ struct itemList: View {
                 PillView(text: $msg, pillOffset: $pillOffset, dragOffset: $dragOffset)
             }
             .background(
+                ZStack {
+                    Color.white
                             LinearGradient(gradient: Gradient(colors: [Color.white, Color("blue")]), startPoint: .top, endPoint: .bottom)
                                 .opacity(0.5)
                                 .edgesIgnoringSafeArea(.all)
                                 .padding(.horizontal, -100)
                                 .padding(.top, 100)
+                }
                         )
             .onAppear{
                 self.viewModel.fetchInOut(array: $nextItems)
