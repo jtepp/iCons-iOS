@@ -6,6 +6,9 @@
 //
 
 import SwiftUI
+import UIKit
+
+
 
 struct CartView: View {
     let PILLGONE:CGFloat = -300
@@ -18,62 +21,35 @@ struct CartView: View {
     @Binding var msg: String
     @Binding var show: Bool
     @Binding var cartcount: Int
+    
     var body: some View {
         VStack(alignment: .leading) {
             Text("Your Cart")
                 .font(.largeTitle)
                 .bold()
-            List(viewModel.cart){ item in
-                CartItemView(showCart: $showCart, item: item, cartcount: $cartcount)
+            ScrollView {
+                ForEach(viewModel.cart){ item in
+                    CartItemView(showCart: $showCart, item: item, cartcount: $cartcount)
+                    Divider()
+                }
+                .padding(.horizontal)
+                
             }
             Spacer()
             HStack {
                 Spacer()
                 Button(action: {confirming = true}, label: {
-                    Text("Send Order")
-                        .padding()
-                        .background(
-                            Capsule()
-                                .fill(viewModel.cart.isEmpty ? Color.gray : Color("green"))
-                        )
+                    HomeButton(text: "SEND ORDER")
                 })
                 .disabled(viewModel.cart.isEmpty)
                 .sheet(isPresented: $confirming, content: {
-                    ZStack {
-                        Color("green")
-                            .edgesIgnoringSafeArea(.all)
-                            .colorScheme(.dark)
+                    ZStack{
+                            LinearGradient(gradient: Gradient(colors: [Color.white, Color("green")]), startPoint: .top, endPoint: .bottom)
+                                .opacity(0.5)
+                                .edgesIgnoringSafeArea(.all)
+                                .padding(.horizontal, -100)
+                                .padding(.top, 100)
                         VStack {
-                            HStack {
-                                Spacer()
-                                Button(action: {
-                                    msg = sendEmail(cart:$viewModel.cart, r: $roomText, c: $showCart) ? "Order sent, check your email soon\nto see if your order was accepted" : "Error sending request\nCheck your network connection and try again"
-                                    show = false
-                                    confirming = false
-                                    showCart = false
-                                    ItemsViewModel().clear(cartcount:$cartcount)
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
-                                        pillOffset = -75
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(6)) {
-                                            pillOffset = PILLGONE
-                                            dragOffset = 0
-                                        }
-
-                                    }
-                                }, label: {
-                                    Text("Confirm")
-                                        .padding()
-                                        .foregroundColor(.white)
-                                        .background(
-                                            Capsule()
-                                                .fill(rooms.contains(roomText) ? Color("green") : Color.gray)
-                                                .colorScheme(.light)
-                                        )
-
-                            }).disabled(!rooms.contains(roomText))
-                                .foregroundColor(.white)
-                                Spacer()
-                            }
                             TextField("Room", text: $roomText)
                                 .keyboardType(.numberPad)
                                 .padding(.vertical, 5)
@@ -82,27 +58,58 @@ struct CartView: View {
                                 .background(
                                     Capsule()
                                         .fill(Color.white)
-
+                                    
                                 )
                                 .padding(.horizontal,100)
                                 .padding(.vertical, 20)
-
+                            
                             Text("Please enter a valid room number")
-                                .foregroundColor(.white)
+                                .foregroundColor(.black)
                                 .font(.footnote)
                                 .padding()
                                 .opacity(!rooms.contains(roomText) ? 1 : 0)
-
-                        }
-
-                    }
-            })
+                            
+                            HStack {
+                                Spacer()
+                                Button(action: {
+                                    msg = sendEmail(cart:$viewModel.cart, r: $roomText, c: $showCart) ? "Order sent, check your email soon\nto see if your order was accepted" : "Error sending request\nCheck your network connection and try again"
+                                    show = false
+                                    confirming = false
+                                    showCart = false
+                                    cartcount = 0
+                                    ItemsViewModel().clear(cartcount:$cartcount)
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
+                                        pillOffset = -75
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(6)) {
+                                            pillOffset = PILLGONE
+                                            dragOffset = 0
+                                        }
+                                        
+                                    }
+                                }, label: {
+                                    HomeButton(text: "CONFIRM")
+                                        .colorMultiply(rooms.contains(roomText) ? Color.white : Color.gray)
+                                                
+                                    
+                                }).disabled(!rooms.contains(roomText))
+                                .foregroundColor(.white)
+                                Spacer()
+                            }
+                        }}
+                })
                 .foregroundColor(.white)
                 Spacer()
             }
             
         }
         .padding()
+        .background(
+            LinearGradient(gradient: Gradient(colors: [Color.white, Color("green")]), startPoint: .top, endPoint: .bottom)
+                .opacity(0.5)
+                .edgesIgnoringSafeArea(.all)
+                .padding(.horizontal, -100)
+                .padding(.top, 100)
+        )
         .onAppear{
             self.viewModel.fetchData()
             self.viewModel.fetchCart()

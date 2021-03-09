@@ -18,12 +18,16 @@ struct Home: View {
     }
     
     let PILLGONE:CGFloat = 200
+    let PILLGONE2:CGFloat = -300
     @State var cartcount = 0
     @State var pillOffset:CGFloat = 200
     @State var dragOffset:CGFloat = 0
+    @State var msg = ""
+    @State var pillOffset2:CGFloat = -200
+    @State var dragOffset2:CGFloat = 0
+    @State var msg2 = ""
     @State var signedOut = true
     @State var already = false
-    @State var msg = ""
     @State var showCart = false
     var db = Firestore.firestore()
     var body: some View {
@@ -84,6 +88,9 @@ struct Home: View {
                     .padding(.top, 100)
             )
             .onAppear{
+                db.collection("cart/\(UserDefaults.standard.string(forKey: "email")!)/cartitems").getDocuments { (snapshot, error) in
+                    cartcount = snapshot!.documents.count
+                }
                 if !signedOut && !already {
                     already = true
                     msg = "Welcome,\n\((UserDefaults.standard.string(forKey: "displayName") ?? "")!)"
@@ -110,7 +117,7 @@ struct Home: View {
                                     }
             )
             .sheet(isPresented: $showCart, content: {
-                CartView(showCart: $showCart, pillOffset: $pillOffset, dragOffset: $dragOffset, msg: $msg, show: $showCart, cartcount: Binding<Int>.constant(0))
+                CartView(showCart: $showCart, pillOffset: $pillOffset2, dragOffset: $dragOffset2, msg: $msg2, show: $showCart, cartcount: Binding<Int>.constant(0))
                 
             })
         }
@@ -118,11 +125,11 @@ struct Home: View {
         .sheet(isPresented: $signedOut, content: {
                 SignIn(cartcount: $cartcount, signedOut: $signedOut, microsoftProvider: self.microsoftProvider, already: $already, msg: $msg, pillOffset: $pillOffset, dragOffset: $dragOffset)}
         )
+        PillView(PILLGONE: PILLGONE2, text: $msg2, pillOffset: $pillOffset2, dragOffset: $dragOffset2)
+            .offset(y: PILLGONE2 * 2)
         
         PillView(text: $msg, pillOffset: $pillOffset, dragOffset: $dragOffset)
-            .onTapGesture {
-                pillOffset = PILLGONE
-            }
+            
         
         }
         
