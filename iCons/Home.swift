@@ -32,7 +32,14 @@ struct Home: View {
     var db = Firestore.firestore()
     var body: some View {
         ZStack { NavigationView {
-            VStack {
+            ZStack {
+                Color.white
+                LinearGradient(gradient: Gradient(colors: [Color.white, Color("green")]), startPoint: .top, endPoint: .bottom)
+                    .opacity(0.5)
+                    .edgesIgnoringSafeArea(.all)
+                    .padding(.horizontal, -100)
+                    .padding(.top, 100)
+                VStack {
                 
                 Text("How can we help you?")
                     .font(.title)
@@ -83,16 +90,7 @@ struct Home: View {
                 Spacer()
                 
             }
-            .background(
-                ZStack {
-                    Color.white
-                    LinearGradient(gradient: Gradient(colors: [Color.white, Color("green")]), startPoint: .top, endPoint: .bottom)
-                        .opacity(0.5)
-                        .edgesIgnoringSafeArea(.all)
-                        .padding(.horizontal, -100)
-                        .padding(.top, 100)
                 }
-            )
             .onAppear{
                 if UserDefaults.standard.string(forKey: "email") ?? nil != nil {
                 db.collection("cart/\(UserDefaults.standard.string(forKey: "email")!)/cartitems").getDocuments { (snapshot, error) in

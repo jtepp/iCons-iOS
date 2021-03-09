@@ -17,11 +17,13 @@ struct CartItemView: View {
     var body: some View {
         HStack { if exists {
             Text(item.item.name)
+                .foregroundColor(.black)
                 .bold()
             Spacer()
             HStack{
                 Text(String(item.quantity))
                     .padding(5)
+                    .foregroundColor(.black)
                     .background(
                         RoundedRectangle(cornerRadius: 5)
                             .stroke(lineWidth: 0.5)

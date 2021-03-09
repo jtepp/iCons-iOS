@@ -30,6 +30,12 @@ struct CategoryPicking: View {
     var body: some View {
         
         ZStack {
+                Color.white
+            LinearGradient(gradient: Gradient(colors: [Color.white, Color("red")]), startPoint: .top, endPoint: .bottom)
+                .opacity(0.5)
+                .edgesIgnoringSafeArea(.all)
+                .padding(.horizontal, -100)
+                .padding(.top, 100)
             VStack {
                 ForEach(0..<Int(categories.count/2), id: \.self){category in
                     HStack {
@@ -98,16 +104,7 @@ struct CategoryPicking: View {
                 }
             
         }
-        .background(
-            ZStack {
-                Color.white
-            LinearGradient(gradient: Gradient(colors: [Color.white, Color("red")]), startPoint: .top, endPoint: .bottom)
-                .opacity(0.5)
-                .edgesIgnoringSafeArea(.all)
-                .padding(.horizontal, -100)
-                .padding(.top, 100)
-            }
-        )
+        
     }
 }
 
