@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Firebase
+import FirebaseFirestore
 
 struct Home: View {
     
@@ -90,8 +91,10 @@ struct Home: View {
                     .padding(.top, 100)
             )
             .onAppear{
+                if UserDefaults.standard.string(forKey: "email") ?? nil != nil {
                 db.collection("cart/\(UserDefaults.standard.string(forKey: "email")!)/cartitems").getDocuments { (snapshot, error) in
                     cartcount = snapshot!.documents.count
+                }
                 }
                 if !signedOut && !already {
                     already = true
