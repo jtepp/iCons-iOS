@@ -52,14 +52,14 @@ struct itemList: View {
                                             
                                             Button(action:{showCart = true}){
                                                 Image(systemName:"cart")
-                                                    .overlay(
-                                                        Text(String(cartcount))
-                                                            .font(.caption2)
-                                                            .foregroundColor(cartcount > 0 ? .white : .clear)
-                                                            .padding(4)
-                                                            .background(Circle().fill(cartcount > 0 ? Color.red : Color.clear))
-                                                            .offset(x: 10.0, y: -10)
-                                                    )
+//                                                    .overlay(
+//                                                        Text(String(cartcount))
+//                                                            .font(.caption2)
+//                                                            .foregroundColor(cartcount > 0 ? .white : .clear)
+//                                                            .padding(4)
+//                                                            .background(Circle().fill(cartcount > 0 ? Color.red : Color.clear))
+//                                                            .offset(x: 10.0, y: -10)
+//                                                    )
                                             }
                     )
                     .sheet(isPresented: $showCart, onDismiss: {

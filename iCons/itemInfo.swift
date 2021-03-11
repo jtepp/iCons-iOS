@@ -66,7 +66,7 @@ struct itemInfo: View {
     var body: some View {
         ZStack {
                 Color.white
-                        LinearGradient(gradient: Gradient(colors: [Color.white, Color("blue")]), startPoint: .top, endPoint: .bottom)
+                        LinearGradient(gradient: Gradient(colors: [Color.white, Color("green")]), startPoint: .top, endPoint: .bottom)
                             .opacity(0.5)
                             .edgesIgnoringSafeArea(.all)
                             .padding(.horizontal, -100)
@@ -178,14 +178,14 @@ struct itemInfo: View {
                                 
                                 Button(action:{showCart = true}){
                                     Image(systemName:"cart")
-                                        .overlay(
-                                            Text(String(cartcount))
-                                                .font(.caption2)
-                                                .foregroundColor(cartcount > 0 ? .white : .clear)
-                                                .padding(4)
-                                                .background(Circle().fill(cartcount > 0 ? Color.red : Color.clear))
-                                                .offset(x: 10.0, y: -10)
-                                        )
+//                                        .overlay(
+//                                            Text(String(cartcount))
+//                                                .font(.caption2)
+//                                                .foregroundColor(cartcount > 0 ? .white : .clear)
+//                                                .padding(4)
+//                                                .background(Circle().fill(cartcount > 0 ? Color.red : Color.clear))
+//                                                .offset(x: 10.0, y: -10)
+//                                        )
                                 }
         )
         
