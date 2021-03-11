@@ -53,6 +53,9 @@ struct CartView: View {
                                 .padding(.horizontal, -100)
                                 .padding(.top, 100)
                         VStack {
+                            Text("Confirm your order")
+                                .font(.system(size: 30, weight: .bold))
+                                .foregroundColor(.black)
                             TextField("Room", text: $roomText)
                                 .keyboardType(.numberPad)
                                 .padding(.vertical, 5)
