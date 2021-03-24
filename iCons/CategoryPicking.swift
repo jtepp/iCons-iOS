@@ -44,7 +44,7 @@ struct CategoryPicking: View {
                         CategoryLink(category: categories[category * 2 + 1])
                     }
                     .padding(.horizontal, 40)
-                    .padding(.bottom)
+                    .padding(.bottom, 20)
                 }
                 
              
@@ -64,7 +64,6 @@ struct CategoryPicking: View {
                     })
                 Spacer()
             }
-            .offset(y: 40)
             .navigationTitle("Categories")
             .onAppear{
                 if !signedOut && !already {
