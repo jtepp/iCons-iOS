@@ -52,7 +52,7 @@ let rooms = [
 ]
 
 struct itemInfo: View {
-    let PILLGONE:CGFloat = -300
+    let PILLGONE:CGFloat = -300 * 2
     @State var cartcount = 0
     @State var msg = ""
     @State var pillOffset:CGFloat = -200

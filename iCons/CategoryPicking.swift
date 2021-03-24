@@ -17,7 +17,7 @@ struct CategoryPicking: View {
         self.microsoftProvider = OAuthProvider(providerID: "microsoft.com")
     }
     
-    let PILLGONE:CGFloat = 200
+    let PILLGONE:CGFloat = 200 * 2
     @State var cartcount = 0
     @State var pillOffset:CGFloat = 200
     @State var dragOffset:CGFloat = 0

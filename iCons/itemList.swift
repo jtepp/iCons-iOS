@@ -14,7 +14,7 @@ struct itemList: View {
     @ObservedObject private var viewModel = ItemsViewModel()
     @State var nextItems = [Item]()
     @State var showCart = false
-    let PILLGONE:CGFloat = 200
+    let PILLGONE:CGFloat = 200 * 2
     @State var pillOffset:CGFloat = 200
     @State var dragOffset:CGFloat = 0
     @State var msg = ""

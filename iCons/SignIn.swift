@@ -10,7 +10,7 @@ import FirebaseAuth
 import FirebaseFirestore
 
 struct SignIn: View {
-    let PILLGONE:CGFloat = 200
+    let PILLGONE:CGFloat = 200 * 2
     @Binding var cartcount: Int
     @Binding var signedOut: Bool
     var microsoftProvider: OAuthProvider?

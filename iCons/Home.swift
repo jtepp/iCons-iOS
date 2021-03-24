@@ -17,8 +17,8 @@ struct Home: View {
         self.microsoftProvider = OAuthProvider(providerID: "microsoft.com")
     }
     
-    let PILLGONE:CGFloat = 200
-    let PILLGONE2:CGFloat = -300
+    let PILLGONE:CGFloat = 200 * 2
+    let PILLGONE2:CGFloat = -300 * 2
     @State var cartcount = 0
     @State var pillOffset:CGFloat = 200
     @State var dragOffset:CGFloat = 0

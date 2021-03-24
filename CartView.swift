@@ -11,7 +11,7 @@ import UIKit
 
 
 struct CartView: View {
-    let PILLGONE:CGFloat = -300
+    let PILLGONE:CGFloat = -300 * 2
     @Binding var showCart: Bool
     @ObservedObject private var viewModel = ItemsViewModel()
     @State var confirming = false

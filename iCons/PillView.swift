@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct PillView: View {
-    var PILLGONE:CGFloat = 200
+    var PILLGONE:CGFloat = 200 * 2
     @Binding var text: String
     @Binding var pillOffset: CGFloat
     @Binding var dragOffset: CGFloat
