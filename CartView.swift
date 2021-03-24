@@ -87,7 +87,7 @@ struct CartView: View {
                                     DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
                                         pillOffset = -75
                                         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(6)) {
-                                            pillOffset = PILLGONE
+                                            pillOffset = PILLGONE*2
                                             dragOffset = 0
                                         }
                                         

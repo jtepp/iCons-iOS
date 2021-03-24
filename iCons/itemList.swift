@@ -71,8 +71,17 @@ struct itemList: View {
                     })
                 }
                 PillView(text: $msg, pillOffset: $pillOffset, dragOffset: $dragOffset)
+                VStack {
+                    Rectangle()
+                        .fill(Color.white)
+                        .frame(width: UIScreen.main.bounds.width+100, height: UIScreen.main.bounds.height*0.164, alignment: .center)
+                        .padding(0)
+                    Spacer()
+                }
+                .edgesIgnoringSafeArea(.all)
             }
             .onAppear{
+                print(UIScreen.main.bounds.height)
                 self.viewModel.fetchInOut(array: $nextItems)
                 db.collection("cart/\(UserDefaults.standard.string(forKey: "email")!)/cartitems").getDocuments { (snapshot, error) in
                     cartcount = snapshot!.documents.count
