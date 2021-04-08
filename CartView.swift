@@ -78,12 +78,10 @@ struct CartView: View {
                             HStack {
                                 Spacer()
                                 Button(action: {
-                                    msg = sendEmail(cart:$viewModel.cart, r: $roomText, c: $showCart) ? "Order sent, check your email soon\nto see if your order was accepted" : "Error sending request\nCheck your network connection and try again"
+                                    msg = sendEmail(cart:$viewModel.cart, r: $roomText, c: $showCart, cc: $cartcount, vm: viewModel) ? "Order sent, check your email soon\nto see if your order was accepted" : "Error sending request\nCheck your network connection and try again"
                                     show = false
                                     confirming = false
                                     showCart = false
-                                    cartcount = 0
-                                    ItemsViewModel().clear(cartcount:$cartcount)
                                     DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
                                         pillOffset = -75
                                         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(6)) {
@@ -139,7 +137,7 @@ struct CartView: View {
 //}
 
 
-func sendEmail(cart: Binding<[CartItem]>, r: Binding<String>, c:Binding<Bool>) -> Bool {
+func sendEmail(cart: Binding<[CartItem]>, r: Binding<String>, c:Binding<Bool>, cc: Binding<Int>, vm: ItemsViewModel) -> Bool {
     
     var itemNQ = [String]()
     var itemIDs = [String]()
@@ -176,16 +174,19 @@ func sendEmail(cart: Binding<[CartItem]>, r: Binding<String>, c:Binding<Bool>) -
         c.wrappedValue = false
         let response = try String(contentsOf: url)
         if response == "success" {
+            cc.wrappedValue = 0
+            vm.clear(cartcount: cc)
             return true
         }
         return false
     } catch {
         print("confirmation error")
-//        c.wrappedValue = false
+        c.wrappedValue = false
         return false
     }
     } else {
         print("empty cart error")
+        c.wrappedValue = false
         return false
     }
     
