@@ -171,7 +171,7 @@ func sendEmail(cart: Binding<[CartItem]>, r: Binding<String>, c:Binding<Bool>) -
         print("invalid url")
         return false
     }
-    
+    if !itemIDs.isEmpty {
     do {
         c.wrappedValue = false
         let response = try String(contentsOf: url)
@@ -181,10 +181,13 @@ func sendEmail(cart: Binding<[CartItem]>, r: Binding<String>, c:Binding<Bool>) -
         return false
     } catch {
         print("confirmation error")
-        c.wrappedValue = false
+//        c.wrappedValue = false
         return false
     }
-    
+    } else {
+        print("empty cart error")
+        return false
+    }
     
 }
 
