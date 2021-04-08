@@ -78,7 +78,8 @@ struct CartView: View {
                             HStack {
                                 Spacer()
                                 Button(action: {
-                                    msg = sendEmail(cart:$viewModel.cart, r: $roomText, c: $showCart, cc: $cartcount, vm: viewModel) ? "Order sent, check your email soon\nto see if your order was accepted" : "Error sending request\nCheck your network connection and try again"
+                                    let emailReturn = sendEmail(cart:$viewModel.cart, r: $roomText, c: $showCart, cc: $cartcount, vm: viewModel)
+                                    msg = emailReturn == 0 ? "Order sent, check your email soon\nto see if your order was accepted" : (emailReturn == 2 ? "Error retrieving cart\nPlease close the app and try again" : "Error sending request\nCheck your network connection and try again")
                                     show = false
                                     confirming = false
                                     showCart = false
@@ -137,7 +138,7 @@ struct CartView: View {
 //}
 
 
-func sendEmail(cart: Binding<[CartItem]>, r: Binding<String>, c:Binding<Bool>, cc: Binding<Int>, vm: ItemsViewModel) -> Bool {
+func sendEmail(cart: Binding<[CartItem]>, r: Binding<String>, c:Binding<Bool>, cc: Binding<Int>, vm: ItemsViewModel) -> Int {
     
     var itemNQ = [String]()
     var itemIDs = [String]()
@@ -167,7 +168,7 @@ func sendEmail(cart: Binding<[CartItem]>, r: Binding<String>, c:Binding<Bool>, c
     let u = "https://iconsportal.netlify.app/.netlify/functions/email?s=Order from room \(room)\(html)"
     guard let url = u.getCleanedURL() else {
         print("invalid url")
-        return false
+        return 1
     }
     if !itemIDs.isEmpty {
     do {
@@ -176,18 +177,18 @@ func sendEmail(cart: Binding<[CartItem]>, r: Binding<String>, c:Binding<Bool>, c
         if response == "success" {
             cc.wrappedValue = 0
             vm.clear(cartcount: cc)
-            return true
+            return 0
         }
-        return false
+        return 1
     } catch {
         print("confirmation error")
         c.wrappedValue = false
-        return false
+        return 1
     }
     } else {
         print("empty cart error")
         c.wrappedValue = false
-        return false
+        return 2
     }
     
 }
